@@ -71,10 +71,10 @@ import java_cup.runtime.*;
 /* MACRO DECALARATIONS */
 /***********************/
 LineTerminator	= \r|\n|\r\n
-WhiteSpace		= {LineTerminator} | [ \t]
+WhiteSpace		= {LineTerminator} | [\t] | [ ]
 INTEGER			= 0 | [1-9][0-9]*
-ID				= [a-z]+
-
+ID				= [a-z|A-Z][a-z|A-Z|0-9]*
+STRING			= \"[a-z|A-Z]*\"
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
 /******************************/
@@ -92,15 +92,37 @@ ID				= [a-z]+
 /**************************************************************/
 
 <YYINITIAL> {
-
-"+"					{ return symbol(TokenNames.PLUS);}
+"string"			{ return symbol(TokenNames.TYPE_STRING);}
+"int"				{ return symbol(TokenNames.TYPE_INT);}	
+"void"				{ return symbol(TokenNames.TYPE_VOID);}
+"extends"			{ return symbol(TokenNames.EXTENDS);}
+"array"				{ return symbol(TokenNames.ARRAY);}	
+"while"				{ return symbol(TokenNames.WHILE);}
+"new"				{ return symbol(TokenNames.NEW);}	
+"return"			{ return symbol(TokenNames.RETURN);}
+"if"				{ return symbol(TokenNames.IF);}
+"class"				{ return symbol(TokenNames.CLASS);}
+"\+"				{ return symbol(TokenNames.PLUS);}
 "-"					{ return symbol(TokenNames.MINUS);}
-"PPP"				{ return symbol(TokenNames.TIMES);}
+"\*"				{ return symbol(TokenNames.TIMES);}
 "/"					{ return symbol(TokenNames.DIVIDE);}
-"("					{ return symbol(TokenNames.LPAREN);}
-")"					{ return symbol(TokenNames.RPAREN);}
+"\("				{ return symbol(TokenNames.LPAREN);}
+"\)"				{ return symbol(TokenNames.RPAREN);}
+"\["				{ return symbol(TokenNames.LBRACK);}
+"\]"				{ return symbol(TokenNames.RBRACK);}
+"\{"				{ return symbol(TokenNames.LBRACE);}
+"\}"				{ return symbol(TokenNames.RBRACE);}
+"nil"				{ return symbol(TokenNames.NIL);}
+","					{ return symbol(TokenNames.COMMA);}
+"\."				{ return symbol(TokenNames.DOT);}
+";"					{ return symbol(TokenNames.SEMICOLON);}
+"<"					{ return symbol(TokenNames.LT);}
+">"					{ return symbol(TokenNames.GT);}
+"="					{ return symbol(TokenNames.EQ);}
+":="				{ return symbol(TokenNames.ASSIGN);}	
 {INTEGER}			{ return symbol(TokenNames.NUMBER, new Integer(yytext()));}
-{ID}				{ return symbol(TokenNames.ID,     new String( yytext()));}   
+{ID}				{ return symbol(TokenNames.ID, new String( yytext()));}   
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
+".*"				{ return symbol(TokenNames.EQ);}	
 }
