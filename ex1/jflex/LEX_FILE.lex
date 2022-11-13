@@ -74,7 +74,8 @@ LineTerminator	= \r|\n|\r\n
 WhiteSpace		= {LineTerminator} | [\t] | [ ]
 INTEGER			= 0 | [1-9][0-9]*
 ID				= [a-z|A-Z][a-z|A-Z|0-9]*
-STRING			= \"[a-z|A-Z]*\"
+LETTER          = [a-z|A-Z]
+STRING			= \"{LETTER}*\"
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
 /******************************/
