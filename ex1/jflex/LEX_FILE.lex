@@ -72,7 +72,8 @@ import java_cup.runtime.*;
 /***********************/
 LineTerminator	= \r|\n|\r\n
 WhiteSpace		= {LineTerminator} | [\t] | [ ]
-INTEGER			= 0 | [1-9][0-9]*
+DIGIT           = [0-9]
+INTEGER			= 0 | [1-9]{DIGIT}*
 ID				= [a-z|A-Z][a-z|A-Z|0-9]*
 LETTER          = [a-z|A-Z]
 STRING			= \"{LETTER}*\"
