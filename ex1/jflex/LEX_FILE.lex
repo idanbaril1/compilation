@@ -121,7 +121,8 @@ STRING			= \"[a-z|A-Z]*\"
 "="					{ return symbol(TokenNames.EQ);}
 ":="				{ return symbol(TokenNames.ASSIGN);}	
 {INTEGER}			{ return (Integer.parseInt(yytext()) > 32767) ? symbol(TokenNames.ERROR) : symbol(TokenNames.NUMBER, new Integer(yytext()));}
-{ID}				{ return symbol(TokenNames.ID, new String( yytext()));}   
+{STRING}			{ return symbol(TokenNames.STRING, yytext().substring(1, yytext().length() - 1));}
+{ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
 ".*"				{ return symbol(TokenNames.EQ);}	
