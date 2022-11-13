@@ -120,7 +120,7 @@ STRING			= \"[a-z|A-Z]*\"
 ">"					{ return symbol(TokenNames.GT);}
 "="					{ return symbol(TokenNames.EQ);}
 ":="				{ return symbol(TokenNames.ASSIGN);}	
-{INTEGER}			{ return (Integer.parseInt(yytext()) > 32767) ? symbol(TokenNames.ERROR) : symbol(TokenNames.NUMBER, new Integer(yytext()));}
+{INTEGER}			{ return (Integer.parseInt(yytext()) > 32767) ? symbol(TokenNames.ERROR) : symbol(TokenNames.INT, new Integer(yytext()));}
 {STRING}			{ return symbol(TokenNames.STRING, yytext().substring(1, yytext().length() - 1));}
 {ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
