@@ -52,7 +52,7 @@ public class Main
 				/************************/
 				/* [6] Print to console */
 				/************************/
-				System.out.print(s.sym);
+				System.out.print(TokenNames.tokenToTokenName[s.sym]);
 				if(s.value != null){
 					System.out.print("(");
 					System.out.print(s.value);
@@ -68,7 +68,7 @@ public class Main
 				/*********************/
 				/* [7] Print to file */
 				/*********************/
-				file_writer.print(s.sym);
+				file_writer.print(TokenNames.tokenToTokenName[s.sym]);
 				if(s.value != null){
 					file_writer.print("(");
 					file_writer.print(s.value);
