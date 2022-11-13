@@ -77,6 +77,17 @@ INTEGER			= 0 | [1-9]{DIGIT}*
 ID				= [a-z|A-Z][a-z|A-Z|0-9]*
 LETTER          = [a-z|A-Z]
 STRING			= \"{LETTER}*\"
+BRACKET         = \( | \) | \[ | \] | \{ | \}
+MARK            = \? | \!
+OPERATOR        = \+ | \- | \* | \/
+DOTS            = \. | \;
+COMMENT1OPENER  = \/\/
+COMMENT2OPENER  = \/\*
+COMMENT2CLOSER  = \*\/
+COMMENT1        = {COMMENT1OPENER}[{LETTER} | {DIGIT} | {WhiteSpace} | {BRACKETS} | {MARK} | {OPERATOR} | {DOTS}]*{LineTerminator}
+COMMENT2        = {COMMENT2OPENER}[{LETTER} | {DIGIT} | {WhiteSpace} | {LineTerminator} | {BRACKETS} | {MARK} | {OPERATOR} | {DOTS}]*{COMMENT2CLOSER}
+COMMENT         = [{COMMENT1} | {COMMENT2}]
+
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
 /******************************/
@@ -125,7 +136,8 @@ STRING			= \"{LETTER}*\"
 {INTEGER}			{ return (Integer.parseInt(yytext()) > 32767) ? symbol(TokenNames.ERROR) : symbol(TokenNames.INT, new Integer(yytext()));}
 {STRING}			{ return symbol(TokenNames.STRING, yytext().substring(1, yytext().length() - 1));}
 {ID}				{ return symbol(TokenNames.ID, new String( yytext()));}
+{COMMENT}		    { /* just skip what was found, do nothing */ }
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
-".*"				{ return symbol(TokenNames.EQ);}	
+".*"				{ return symbol(TokenNames.ERROR);}
 }
