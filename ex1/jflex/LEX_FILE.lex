@@ -71,7 +71,8 @@ import java_cup.runtime.*;
 /* MACRO DECALARATIONS */
 /***********************/
 LineTerminator	= \r|\n|\r\n
-WhiteSpace		= {LineTerminator} | [\t] | [ ]
+WhiteSpaceWithoutLineTerminator		= [\t] | [ ]
+WhiteSpace		= {LineTerminator} | {WhiteSpaceWithoutLineTerminator}
 DIGIT           = [0-9]
 INTEGER			= 0 | [1-9]{DIGIT}*
 ID				= [a-z|A-Z][a-z|A-Z|0-9]*
@@ -84,9 +85,9 @@ DOTS            = \. | \;
 COMMENT1OPENER  = \/\/
 COMMENT2OPENER  = \/\*
 COMMENT2CLOSER  = \*\/
-COMMENT1        = {COMMENT1OPENER}[{LETTER} | {DIGIT} | {WhiteSpace} | {BRACKETS} | {MARK} | {OPERATOR} | {DOTS}]*{LineTerminator}
-COMMENT2        = {COMMENT2OPENER}[{LETTER} | {DIGIT} | {WhiteSpace} | {LineTerminator} | {BRACKETS} | {MARK} | {OPERATOR} | {DOTS}]*{COMMENT2CLOSER}
-COMMENT         = [{COMMENT1} | {COMMENT2}]
+COMMENT1        = {COMMENT1OPENER}({LETTER}|{DIGIT}|{WhiteSpaceWithoutLineTerminator}|{BRACKET}|{MARK}|{OPERATOR}|{DOTS})*{LineTerminator}
+COMMENT2        = {COMMENT2OPENER}({LETTER}|{DIGIT}|{WhiteSpace}|{LineTerminator}|{BRACKET}|{MARK}|{OPERATOR}|{DOTS})*{COMMENT2CLOSER}
+COMMENT         = ({COMMENT1}|{COMMENT2})
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
