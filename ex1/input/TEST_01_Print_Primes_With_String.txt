@@ -2,7 +2,7 @@ int IsPrime(int p)
 {
     int i := 2;
     int j := 2;
-    String a = "abcde";
+    string a = "abcde";
 
     
     while (i<p)
