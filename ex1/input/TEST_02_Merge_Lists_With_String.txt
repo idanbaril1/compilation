@@ -8,7 +8,7 @@ IntList MergeLists(IntList l1, IntList l2)
 {
     if (l1 = nil)
     {
-        String a = "abcde";
+        string a = "abcde";
         return l2;
     }
     if (l2 = nil)
