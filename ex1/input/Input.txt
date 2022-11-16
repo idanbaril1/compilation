@@ -1,3 +1,5 @@
-abcd
-moish 77 999 zebra
-90
+class void IntList
+{
+    int head;
+    IntList tail;
+}
