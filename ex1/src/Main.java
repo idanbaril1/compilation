@@ -54,9 +54,16 @@ public class Main
 				/************************/
 				System.out.print(TokenNames.tokenToTokenName[s.sym]);
 				if(s.value != null){
-					System.out.print("(");
-					System.out.print(s.value);
-					System.out.print(")");
+					if(s.sym == TokenNames.STRING){
+						System.out.print("(\"");
+						System.out.print(s.value);
+						System.out.print("\")");
+					}
+					else{
+						System.out.print("(");
+						System.out.print(s.value);
+						System.out.print(")");
+					}					
 				}
 				System.out.print("[");
 				System.out.print(l.getLine());
@@ -70,9 +77,16 @@ public class Main
 				/*********************/
 				file_writer.print(TokenNames.tokenToTokenName[s.sym]);
 				if(s.value != null){
-					file_writer.print("(");
-					file_writer.print(s.value);
-					file_writer.print(")");
+					if(s.sym == TokenNames.STRING){
+						file_writer.print("(\"");
+						file_writer.print(s.value);
+						file_writer.print("\")");
+					}
+					else{
+						file_writer.print("(");
+						file_writer.print(s.value);
+						file_writer.print(")");
+					}				
 				}
 				file_writer.print("[");
 				file_writer.print(l.getLine());
