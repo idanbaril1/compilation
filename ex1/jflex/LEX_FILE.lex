@@ -80,13 +80,13 @@ LETTER          = [a-z|A-Z]
 STRING			= \"{LETTER}*\"
 BRACKET         = \( | \) | \[ | \] | \{ | \}
 MARK            = \? | \!
-OPERATOR        = \+ | \- | \* | \/
+OPERATOR        = \+ | \- | \*[^\/] | \/
 DOTS            = \. | \;
 COMMENT1OPENER  = \/\/
 COMMENT2OPENER  = \/\*
 COMMENT2CLOSER  = \*\/
 COMMENT1        = {COMMENT1OPENER}({LETTER}|{DIGIT}|{WhiteSpaceWithoutLineTerminator}|{BRACKET}|{MARK}|{OPERATOR}|{DOTS})*{LineTerminator}
-COMMENT2        = {COMMENT2OPENER}({LETTER}|{DIGIT}|{WhiteSpace}|{LineTerminator}|{BRACKET}|{MARK}|{OPERATOR}|{DOTS})*{COMMENT2CLOSER}
+COMMENT2        = {COMMENT2OPENER}({LETTER}|{DIGIT}|{WhiteSpace}|{LineTerminator}|{BRACKET}|{MARK}|{OPERATOR}|{DOTS})*[\*]?{COMMENT2CLOSER}
 COMMENT         = ({COMMENT1}|{COMMENT2})
 
 /******************************/
