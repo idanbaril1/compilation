@@ -91,7 +91,6 @@ COMMENT2CLOSER  = \*\/
 COMMENT1        = {COMMENT1OPENER}({LETTER}|{DIGIT}|{WhiteSpaceWithoutLineTerminator}|{BRACKET}|{MARK}|{OPERATOR1}|{DOTS})*{LineTerminator}
 COMMENT2        = {COMMENT2OPENER}({LETTER}|{DIGIT}|{WhiteSpace}|{LineTerminator}|{BRACKET}|{MARK}|{OPERATOR2}|{DOTS})*[\*]?{COMMENT2CLOSER}
 COMMENT         = ({COMMENT1}|{COMMENT2})
-ANY		= .*
 
 /******************************/
 /* DOLAR DOLAR - DON'T TOUCH! */
@@ -144,5 +143,5 @@ ANY		= .*
 {COMMENT}		    { /* just skip what was found, do nothing */ }
 {WhiteSpace}		{ /* just skip what was found, do nothing */ }
 <<EOF>>				{ return symbol(TokenNames.EOF);}
-{ANY}				{ return symbol(TokenNames.ERROR);}
+".*"				{ return symbol(TokenNames.ERROR);}
 }
