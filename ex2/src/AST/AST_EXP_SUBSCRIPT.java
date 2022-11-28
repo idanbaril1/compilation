@@ -6,13 +6,13 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 	/*  [var.]ID([exp[,exp]*]) */
 	/***************/
 	public AST_VAR var;
-	public String id;
-	public AST_EXP[] expArr;
+	public String fieldName;
+	public AST_EXP_LIST expList;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_EXP_SUBSCRIPT(AST_VAR var, String id, AST_EXP[] expArr)
+	public AST_EXP_SUBSCRIPT(AST_VAR var, String fieldName, AST_EXP_LIST expList)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -29,7 +29,7 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		/*******************************/
 		this.var = var;
 		this.id = id;
-		this.expArr = expArr;
+		this.expList = expList;
 	}
 
 	/*********************************************************/
@@ -46,7 +46,7 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		/* RECURSIVELY PRINT VAR + EXP ... */
 		/***********************************/
 		if (var != null) var.PrintMe();
-		if (expArr[0] != null) expArr[0].PrintMe();
+		if (expList != null) expList.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
@@ -59,6 +59,6 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
-		if(expArr != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,expArr[0].SerialNumber);
+		if(expList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,expList.SerialNumber);
 	}
 }

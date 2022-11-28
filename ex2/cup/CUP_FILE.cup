@@ -99,8 +99,13 @@ non terminal AST_TYPE type;
 non terminal AST_DEC_ARRAY arrayTypedef;
 non terminal AST_DEC_CLASS classDec;
 non terminal AST_DEC_VAR varDec;
+non terminal AST_ARG arg;
 non terminal AST_DEC_FUNC funcDec;
 non terminal AST_CFIELD cField;
+non terminal AST_DEC_LIST decList;
+non terminal AST_EXP_LIST expList;
+non terminal AST_ARGS_LIST argsListList;
+non terminal AST_CFIELD_LIST cFieldList;
 
 /***********************/
 /* OPERATOR PRECEDENCE */
@@ -130,6 +135,23 @@ stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s,l);    :}
 					| stmt:s				{: RESULT = new AST_STMT_LIST(s,null); :}
 					;
 
+decList		::=		dec:d	decList:dl		{: RESULT = new AST_DEC_LIST(d,dl);    :}
+					| dec:d					{: RESULT = new AST_DEC_LIST(d,null); :}
+					;
+
+expList		::=		exp:e COMMA	expList:el		{: RESULT = new AST_EXP_LIST(e,el);    :}
+					| exp:e					{: RESULT = new AST_EXP_LIST(e,null); :}
+					;
+argsList	::=		arg:a COMMA	argsList:al		{: RESULT = new AST_ARGS_LIST(a,al);    :}
+					| arg:a						{: RESULT = new AST_ARGS_LIST(a,null); :}
+					;
+cFieldList	::=		cField:cf COMMA	cFieldList:cfl		{: RESULT = new AST_CFIELD_LIST(cf,cfl);    :}
+					| cField:cf							{: RESULT = new AST_CFIELD_LIST(cf,null); :}
+					;
+
+arg			::=		type:t ID:name			{: RESULT = new AST_ARG(t, name);       :}
+					;
+
 var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name);       :}
 					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName); :} 
 					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e);     :} 
@@ -156,13 +178,20 @@ exp			::=		INT:i								{: RESULT = new AST_EXP_INT(i);          :}
 					| exp:e1 GT exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 5);:}
 					| exp:e1 EQ exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 6);:}
 					| LPAREN exp:e RPAREN				{: RESULT = new AST_EXP_PAREN(e);:}
-					| [var:v DOT] ID:fieldName LPAREN exp:e [COMMA exp]* RPAREN SEMICOLON				{: RESULT = new :}
+					| var:v DOT ID:fieldName LPAREN expList:l RPAREN	{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,l):}
+					| ID:fieldName LPAREN expList:l RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,l):}
+					| ID:fieldName LPAREN RPAREN						{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,null):}
+					| var:v DOT ID:fieldName LPAREN RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,null):}
+					| - INT:i							{: RESULT = new AST_EXP_INT(i);         :}
+					| STRING:s							{: RESULT = new AST_EXP_STRING(s);      :}
+					| NIL								{: RESULT = new AST_EXP_NIL();          :}
 					;
 dec			::=		varDec:v								{: RESULT = new AST_DEC(v);          :}
 					| funcDec:f								{: RESULT = new AST_DEC(f);         :}
 					| classDec:c							{: RESULT = new AST_DEC(c); :}
 					| arrayTypedef:a						{: RESULT = new AST_DEC(a); :}
 					;
+Program		::=		decList:dl								{: RESULT = new AST_PROGRAM(dl);      :}
 					
 newExp		::=		NEW type:t								{: RESULT = new AST_NEW_EXP_SIMPLE(t);      :}
 					| NEW type:t LBRACK	exp:e RBRACK		{: RESULT = new AST_NEW_EXP_SUBSCRIPT(t,e); :}					
