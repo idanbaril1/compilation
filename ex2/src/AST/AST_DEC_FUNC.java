@@ -50,12 +50,15 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			"FUNC DEC\ntype ID([type ID [COMMA type ID]*]){stmt [stmt]*}\n");
-		
+			
+		type.PrintMe();
+		if(args!=null) args.PrintMe();
+		content.PrintMe();
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
-		AST_GRAPHVIZ.getInstance().logEdge(args,content.SerialNumber);
+		if(args!=null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,args.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,content.SerialNumber);
 	}
 }

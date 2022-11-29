@@ -12,7 +12,7 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_FUNC(String name, AST_TYPE type, AST_EXP exp)
+	public AST_DEC_VAR(String name, AST_TYPE type, AST_EXP exp)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

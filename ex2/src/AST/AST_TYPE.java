@@ -1,6 +1,6 @@
 package AST;
 
-public class AST_TYPE
+public class AST_TYPE extends AST_Node
 {
 	/***************/
 	/*  type */
@@ -48,6 +48,5 @@ public class AST_TYPE
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		
 	}
 }

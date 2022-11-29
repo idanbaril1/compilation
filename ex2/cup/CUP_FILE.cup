@@ -17,10 +17,10 @@ parser code
 	{
 		System.out.print("ERROR >> ");		
 		System.out.print("[");
-		System.out.print(lexer.getLine());
-		System.out.print(":");
-		System.out.print(lexer.getCharPos());
-		System.out.print("] ");		
+		System.out.print(lexer.getLine());		
+		System.out.print("] ");	
+		System.out.print(message);
+		System.out.print(info.toString());		
 		System.exit(0);
 	}
 :}
@@ -34,9 +34,7 @@ scan with
 	s = lexer.next_token();
 	//System.out.print(s.sym);
 	System.out.print("[");
-	System.out.print(lexer.getLine());
-	System.out.print(":");
-	System.out.print(lexer.getCharPos());
+	System.out.print(lexer.getLine());	
 	System.out.print("] ");
 	System.out.print(TokenNames.terminalNames[s.sym]);
 	if (s.value != null)
@@ -78,6 +76,9 @@ terminal RETURN;
 terminal NEW;
 terminal LT;
 terminal GT;
+terminal CLASS;
+terminal EXTENDS;
+terminal ERROR;
 
 /*************/
 /* TERMINALS */
@@ -104,28 +105,26 @@ non terminal AST_DEC_FUNC funcDec;
 non terminal AST_CFIELD cField;
 non terminal AST_DEC_LIST decList;
 non terminal AST_EXP_LIST expList;
-non terminal AST_ARGS_LIST argsListList;
+non terminal AST_ARGS_LIST argsList;
 non terminal AST_CFIELD_LIST cFieldList;
+non terminal AST_PROGRAM Program;
 
 /***********************/
 /* OPERATOR PRECEDENCE */
 /***********************/
-precedence left PLUS;
-precedence left MINUS;
-precedence left TIMES;
-precedence left DIVIDE;
-precedence ASSIGN;
+precedence left ASSIGN;
 precedence left EQ;
-precedence left GT;
-precedence left LT;
-precedence LBRACK;
-precedence LPAREN;
+precedence left LT, GT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left LBRACK;
+precedence left LPAREN;
 precedence left DOT;
 
 /************************/
-/* START WITH: stmtList */
+/* START WITH: Program */
 /************************/
-start with stmtList;
+start with Program;
 
 /********************/
 /* DERIVATION RULES */
@@ -163,8 +162,8 @@ stmt		::=		var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v
 					| var:v ASSIGN newExp:ne SEMICOLON							{: RESULT = new AST_STMT_ASSIGN_NEW(v,ne); :}
 					| RETURN  SEMICOLON											{: RESULT = new AST_STMT_RETURN(null); :}
 					| RETURN exp:e SEMICOLON									{: RESULT = new AST_STMT_RETURN(e); :}
-					| ID:fieldName LPAREN explist:l RPAREN SEMICOLON			{: RESULT = new AST_STMT_SUBSCRIPT(null,fieldName,l); :}
-					| var:v DOT ID:fieldName LPAREN explist:l RPAREN SEMICOLON	{: RESULT = new AST_STMT_SUBSCRIPT(v,fieldName,l); :}
+					| ID:fieldName LPAREN expList:l RPAREN SEMICOLON			{: RESULT = new AST_STMT_SUBSCRIPT(null,fieldName,l); :}
+					| var:v DOT ID:fieldName LPAREN expList:l RPAREN SEMICOLON	{: RESULT = new AST_STMT_SUBSCRIPT(v,fieldName,l); :}
 					| varDec:vd 												{: RESULT = new AST_STMT_VAR_DEC(vd); :}
 					;
 
@@ -178,11 +177,11 @@ exp			::=		INT:i								{: RESULT = new AST_EXP_INT(i);          :}
 					| exp:e1 GT exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 5);:}
 					| exp:e1 EQ exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 6);:}
 					| LPAREN exp:e RPAREN				{: RESULT = new AST_EXP_PAREN(e);:}
-					| var:v DOT ID:fieldName LPAREN expList:l RPAREN	{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,l):}
-					| ID:fieldName LPAREN expList:l RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,l):}
-					| ID:fieldName LPAREN RPAREN						{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,null):}
-					| var:v DOT ID:fieldName LPAREN RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,null):}
-					| - INT:i							{: RESULT = new AST_EXP_INT(i);         :}
+					| var:v DOT ID:fieldName LPAREN expList:l RPAREN	{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,l);:}
+					| ID:fieldName LPAREN expList:l RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,l);:}
+					| ID:fieldName LPAREN RPAREN						{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,null);:}
+					| var:v DOT ID:fieldName LPAREN RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,null);:}
+					| MINUS INT:i							{: RESULT = new AST_EXP_INT(i);         :}
 					| STRING:s							{: RESULT = new AST_EXP_STRING(s);      :}
 					| NIL								{: RESULT = new AST_EXP_NIL();          :}
 					;
@@ -192,7 +191,7 @@ dec			::=		varDec:v								{: RESULT = new AST_DEC(v);          :}
 					| arrayTypedef:a						{: RESULT = new AST_DEC(a); :}
 					;
 Program		::=		decList:dl								{: RESULT = new AST_PROGRAM(dl);      :}
-					
+					;
 newExp		::=		NEW type:t								{: RESULT = new AST_NEW_EXP_SIMPLE(t);      :}
 					| NEW type:t LBRACK	exp:e RBRACK		{: RESULT = new AST_NEW_EXP_SUBSCRIPT(t,e); :}					
 					;					
@@ -210,8 +209,8 @@ funcDec		::=		type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE		{: RESULT =
 cField		::=		varDec:vd						{: RESULT = new AST_CFIELD_VAR(vd);      :}
 					| funcDec:fd					{: RESULT = new AST_CFIELD_FUNC(fd);      :}
 					;
-type		::=		TYPE_INT						{: RESULT = new AST_TYPE(TYPE_INT);      :}
-					| TYPE_STRING					{: RESULT = new AST_CFIELD_FUNC(TYPE_STRING);      :}
-					| TYPE_VOID						{: RESULT = new AST_CFIELD_FUNC(TYPE_VOID);      :}
-					| ID:t							{: RESULT = new AST_CFIELD_FUNC(t);      :}
+type		::=		TYPE_INT						{: RESULT = new AST_TYPE("TYPE_INT");      :}
+					| TYPE_STRING					{: RESULT = new AST_TYPE("TYPE_STRING");      :}
+					| TYPE_VOID						{: RESULT = new AST_TYPE("TYPE_VOID");      :}
+					| ID:t							{: RESULT = new AST_TYPE(t);      :}
 					;					

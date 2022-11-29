@@ -95,41 +95,42 @@ public class AST_DEC extends AST_Node
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
-		if (this.varDec){
+		if (this.varDec != null){
 			AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			"DEC\n varDec\n");
 		
+			this.varDec.PrintMe();
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,varDec.SerialNumber);
 		}
-		else if (this.funcDec){
+		else if (this.funcDec != null){
 			AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			"DEC\n funcDec\n");
-		
+			this.funcDec.PrintMe();
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,funcDec.SerialNumber);
 		}
-		else if (this.classDec){
+		else if (this.classDec != null){
 			AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			"DEC\n classDec\n");
-		
+			this.classDec.PrintMe();
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,classDec.SerialNumber);
 		}
-		else if (this.arrDec){
+		else if (this.arrDec != null){
 			AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			"DEC\n arrDec\n");
-		
+			this.arrDec.PrintMe();
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/

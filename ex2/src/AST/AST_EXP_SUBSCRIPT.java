@@ -28,7 +28,7 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.var = var;
-		this.id = id;
+		this.fieldName = fieldName;
 		this.expList = expList;
 	}
 

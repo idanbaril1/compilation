@@ -7,12 +7,12 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 	/***************/
 	public String name;
 	public String fatherName;
-	public AST_CFIELD[] content;
+	public AST_CFIELD_LIST content;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_CLASS(String name, String fatherName, AST_CFIELD[] content)
+	public AST_DEC_CLASS(String name, String fatherName, AST_CFIELD_LIST content)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -52,6 +52,6 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,content[0].SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,content.SerialNumber);
 	}
 }

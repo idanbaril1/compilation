@@ -45,7 +45,7 @@ public class AST_EXP_PAREN extends AST_EXP
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
-			SerialNumber);
+			SerialNumber, "exp\n(exp)");
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */

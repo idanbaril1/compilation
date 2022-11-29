@@ -10,7 +10,7 @@ public class AST_CFIELD_VAR extends AST_CFIELD
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_CFIELD_FUNC(AST_DEC_VAR vd)
+	public AST_CFIELD_VAR(AST_DEC_VAR vd)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */

@@ -7,7 +7,7 @@ public class AST_PROGRAM extends AST_Node
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_VAR(AST_DEC_LIST dl)
+	public AST_PROGRAM(AST_DEC_LIST dl)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
