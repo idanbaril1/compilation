@@ -36,14 +36,14 @@ public class AST_TYPE extends AST_Node
 		/********************************************/
 		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
 		/********************************************/
-		System.out.print("AST TYPE STMT\n");
+		System.out.format("AST TYPE STMT\n");
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"type\n");
+			String.format("type\n%s", type));
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */

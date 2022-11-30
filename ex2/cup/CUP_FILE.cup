@@ -144,10 +144,14 @@ expList		::=		exp:e COMMA	expList:el		{: RESULT = new AST_EXP_LIST(e,el);    :}
 argsList	::=		arg:a COMMA	argsList:al		{: RESULT = new AST_ARGS_LIST(a,al);    :}
 					| arg:a						{: RESULT = new AST_ARGS_LIST(a,null); :}
 					;
-cFieldList	::=		cField:cf COMMA	cFieldList:cfl		{: RESULT = new AST_CFIELD_LIST(cf,cfl);    :}
+cFieldList	::=		cField:cf cFieldList:cfl		{: RESULT = new AST_CFIELD_LIST(cf,cfl);    :}
 					| cField:cf							{: RESULT = new AST_CFIELD_LIST(cf,null); :}
 					;
-
+type		::=		TYPE_INT						{: RESULT = new AST_TYPE("TYPE_INT");      :}
+					| TYPE_STRING					{: RESULT = new AST_TYPE("TYPE_STRING");      :}
+					| TYPE_VOID						{: RESULT = new AST_TYPE("TYPE_VOID");      :}
+					| ID:t							{: RESULT = new AST_TYPE(t);      :}
+					;	
 arg			::=		type:t ID:name			{: RESULT = new AST_ARG(t, name);       :}
 					;
 
@@ -200,8 +204,9 @@ arrayTypedef::=		ARRAY ID:name ASSIGN type:t LBRACK RBRACK SEMICOLON		{: RESULT 
 classDec	::=		CLASS ID:name LBRACE cFieldList:l RBRACE 	{: RESULT = new AST_DEC_CLASS(name,null,l);      :}
 					| CLASS ID:name EXTENDS ID:fatherName LBRACE cFieldList:l RBRACE 	{: RESULT = new AST_DEC_CLASS(name,fatherName,l);      :}					
 					;					
-varDec		::=		type:t ID:name SEMICOLON				{: RESULT = new AST_DEC_VAR(name,t,null);      :}
-					| type:t ID:name ASSIGN exp:e SEMICOLON	{: RESULT = new AST_DEC_VAR(name,t,e);      :}
+varDec		::=		type:t ID:name SEMICOLON				{: RESULT = new AST_DEC_VAR(name,t,null,null);      :}
+					| type:t ID:name ASSIGN exp:e SEMICOLON	{: RESULT = new AST_DEC_VAR(name,t,e,null);      :}
+					| type:t ID:name ASSIGN newExp:ne SEMICOLON	{: RESULT = new AST_DEC_VAR(name,t,null,ne);      :}
 					;					
 funcDec		::=		type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE		{: RESULT = new AST_DEC_FUNC(name,t,null,l);      :}
 					| type:t ID:name LPAREN argsList:args RPAREN LBRACE stmtList:l RBRACE		{: RESULT = new AST_DEC_FUNC(name,t,args,l);      :}
@@ -209,8 +214,4 @@ funcDec		::=		type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE		{: RESULT =
 cField		::=		varDec:vd						{: RESULT = new AST_CFIELD_VAR(vd);      :}
 					| funcDec:fd					{: RESULT = new AST_CFIELD_FUNC(fd);      :}
 					;
-type		::=		TYPE_INT						{: RESULT = new AST_TYPE("TYPE_INT");      :}
-					| TYPE_STRING					{: RESULT = new AST_TYPE("TYPE_STRING");      :}
-					| TYPE_VOID						{: RESULT = new AST_TYPE("TYPE_VOID");      :}
-					| ID:t							{: RESULT = new AST_TYPE(t);      :}
-					;					
+				

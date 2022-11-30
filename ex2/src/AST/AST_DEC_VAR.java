@@ -8,11 +8,12 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 	public String name;
 	public AST_TYPE type;
 	public AST_EXP exp;
+	public AST_NEW_EXP newExp;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_VAR(String name, AST_TYPE type, AST_EXP exp)
+	public AST_DEC_VAR(String name, AST_TYPE type, AST_EXP exp, AST_NEW_EXP newExp)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -30,6 +31,7 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		this.name = name;
 		this.type = type;
 		this.exp = exp;
+		this.newExp = newExp;
 	}
 
 	/*********************************************************/
@@ -47,12 +49,13 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"VAR DEC\ntype ID [= exp];\n");
+			"VAR DEC\ntype ID [= exp/newExp];\n");
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+		if(exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+		if(newExp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,newExp.SerialNumber);
 	}
 }

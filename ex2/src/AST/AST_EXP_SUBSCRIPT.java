@@ -58,7 +58,7 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
+		if (var != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		if(expList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,expList.SerialNumber);
 	}
 }
