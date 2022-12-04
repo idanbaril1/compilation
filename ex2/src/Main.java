@@ -37,7 +37,7 @@ public class Main
 			/*******************************/
 			/* [4] Initialize a new parser */
 			/*******************************/
-			p = new Parser(l);
+			p = new Parser(l, file_writer);
 
 			/***********************************/
 			/* [5] 3 ... 2 ... 1 ... Parse !!! */
@@ -49,6 +49,8 @@ public class Main
 			/*************************/
 			AST.PrintMe();
 			
+			
+			file_writer.print("OK");
 			/*************************/
 			/* [7] Close output file */
 			/*************************/

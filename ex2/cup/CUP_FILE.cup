@@ -2,25 +2,26 @@
 /* IMPORT(S) */
 /*************/
 import java_cup.runtime.*;
+import java.io.PrintWriter;
 import AST.*;
 
 parser code 
 {:
 	public Lexer lexer;
-
-	public Parser(Lexer lexer)
+	private PrintWriter fileWriter;
+	public Parser(Lexer lexer, PrintWriter fileWriter)
 	{
 		super(lexer);
 		this.lexer = lexer;
+		this.fileWriter = fileWriter;
 	}
 	public void report_error(String message, Object info)
 	{
-		System.out.print("ERROR >> ");		
-		System.out.print("[");
-		System.out.print(lexer.getLine());		
-		System.out.print("] ");	
-		System.out.print(message);
-		System.out.print(info.toString());		
+		System.out.print("ERROR");
+		fileWriter.print("ERROR(");		
+		fileWriter.print(lexer.getLine());		
+		fileWriter.print(")");
+		fileWriter.close();
 		System.exit(0);
 	}
 :}
@@ -199,7 +200,7 @@ Program		::=		decList:dl								{: RESULT = new AST_PROGRAM(dl);      :}
 newExp		::=		NEW type:t								{: RESULT = new AST_NEW_EXP_SIMPLE(t);      :}
 					| NEW type:t LBRACK	exp:e RBRACK		{: RESULT = new AST_NEW_EXP_SUBSCRIPT(t,e); :}					
 					;					
-arrayTypedef::=		ARRAY ID:name ASSIGN type:t LBRACK RBRACK SEMICOLON		{: RESULT = new AST_DEC_ARRAY(name,t);      :}								
+arrayTypedef::=		ARRAY ID:name EQ type:t LBRACK RBRACK SEMICOLON		{: RESULT = new AST_DEC_ARRAY(name,t);      :}								
 					;					
 classDec	::=		CLASS ID:name LBRACE cFieldList:l RBRACE 	{: RESULT = new AST_DEC_CLASS(name,null,l);      :}
 					| CLASS ID:name EXTENDS ID:fatherName LBRACE cFieldList:l RBRACE 	{: RESULT = new AST_DEC_CLASS(name,fatherName,l);      :}					
