@@ -17,7 +17,9 @@ parser code
 	}
 	public void report_error(String message, Object info)
 	{
-		System.out.print("ERROR");
+		System.out.print("ERROR\n");
+		System.out.print(message);
+		System.out.print(info.toString());
 		fileWriter.print("ERROR(");		
 		fileWriter.print(lexer.getLine());		
 		fileWriter.print(")");
@@ -43,6 +45,11 @@ scan with
 		System.out.print("( ");
 		System.out.print(s.value);
 		System.out.print(" )");
+	}
+	if(TokenNames.terminalNames[s.sym] == "ERROR"){
+		fileWriter.print("ERROR");
+		fileWriter.close();
+		System.exit(0);
 	}
 	System.out.print("\n");
 	return s; 
