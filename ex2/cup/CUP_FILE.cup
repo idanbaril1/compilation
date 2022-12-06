@@ -16,10 +16,7 @@ parser code
 		this.fileWriter = fileWriter;
 	}
 	public void report_error(String message, Object info)
-	{
-		System.out.print("ERROR\n");
-		System.out.print(message);
-		System.out.print(info.toString());
+	{		
 		fileWriter.print("ERROR(");		
 		fileWriter.print(lexer.getLine());		
 		fileWriter.print(")");
@@ -34,24 +31,12 @@ parser code
 scan with
 {:
 	Symbol s;
-	s = lexer.next_token();
-	//System.out.print(s.sym);
-	System.out.print("[");
-	System.out.print(lexer.getLine());	
-	System.out.print("] ");
-	System.out.print(TokenNames.terminalNames[s.sym]);
-	if (s.value != null)
-	{
-		System.out.print("( ");
-		System.out.print(s.value);
-		System.out.print(" )");
-	}
+	s = lexer.next_token();	
 	if(TokenNames.terminalNames[s.sym] == "ERROR"){
 		fileWriter.print("ERROR");
 		fileWriter.close();
 		System.exit(0);
 	}
-	System.out.print("\n");
 	return s; 
 :};
 
