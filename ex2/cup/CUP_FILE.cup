@@ -178,7 +178,7 @@ exp			::=		INT:i								{: RESULT = new AST_EXP_INT(i);          :}
 					| ID:fieldName LPAREN expList:l RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,l);:}
 					| ID:fieldName LPAREN RPAREN						{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,null);:}
 					| var:v DOT ID:fieldName LPAREN RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,null);:}
-					| MINUS INT:i							{: RESULT = new AST_EXP_INT(i);         :}
+					| MINUS INT:i							{: RESULT = new AST_EXP_INT(-1*i);         :}
 					| STRING:s							{: RESULT = new AST_EXP_STRING(s);      :}
 					| NIL								{: RESULT = new AST_EXP_NIL();          :}
 					;
