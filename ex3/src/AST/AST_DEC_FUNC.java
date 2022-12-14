@@ -3,66 +3,67 @@ package AST;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
-public class AST_DEC_FUNC extends AST_DEC
+public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 {
-	/****************/
-	/* DATA MEMBERS */
-	/****************/
-	public String returnTypeName;
+	/***************/
+	/*  type ID([type ID [COMMA type ID]*]){stmt [stmt]*} */
+	/***************/
 	public String name;
-	public AST_TYPE_NAME_LIST params;
-	public AST_STMT_LIST body;
-	
-	/******************/
-	/* CONSTRUCTOR(S) */
-	/******************/
-	public AST_DEC_FUNC(
-		String returnTypeName,
-		String name,
-		AST_TYPE_NAME_LIST params,
-		AST_STMT_LIST body)
+	public AST_TYPE type;
+	public AST_ARGS_LIST args;
+	public AST_STMT_LIST content;
+
+	/*******************/
+	/*  CONSTRUCTOR(S) */
+	/*******************/
+	public AST_DEC_FUNC(String name, AST_TYPE type, AST_ARGS_LIST args, AST_STMT_LIST content)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 
-		this.returnTypeName = returnTypeName;
+		/***************************************/
+		/* PRINT CORRESPONDING DERIVATION RULE */
+		/***************************************/
+		System.out.print("====================== funcDec -> type ID([type ID [COMMA type ID]*]){stmt [stmt]*}\n");
+
+		/*******************************/
+		/* COPY INPUT DATA NENBERS ... */
+		/*******************************/
 		this.name = name;
-		this.params = params;
-		this.body = body;
+		this.type = type;
+		this.args = args;
+		this.content = content;
 	}
 
-	/************************************************************/
-	/* The printing message for a function declaration AST node */
-	/************************************************************/
+	/*********************************************************/
+	/* The printing message for an dec array AST node */
+	/*********************************************************/
 	public void PrintMe()
 	{
-		/*************************************************/
-		/* AST NODE TYPE = AST NODE FUNCTION DECLARATION */
-		/*************************************************/
-		System.out.format("FUNC(%s):%s\n",name,returnTypeName);
+		/********************************************/
+		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
+		/********************************************/
+		System.out.print("AST FUNC DEC STMT\n");
 
-		/***************************************/
-		/* RECURSIVELY PRINT params + body ... */
-		/***************************************/
-		if (params != null) params.PrintMe();
-		if (body   != null) body.PrintMe();
-		
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			String.format("FUNC(%s)\n:%s\n",name,returnTypeName));
-		
+			"FUNC DEC\ntype ID([type ID [COMMA type ID]*]){stmt [stmt]*}\n");
+			
+		type.PrintMe();
+		if(args!=null) args.PrintMe();
+		content.PrintMe();
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		if (params != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,params.SerialNumber);		
-		if (body   != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,body.SerialNumber);		
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
+		if(args!=null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,args.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,content.SerialNumber);
 	}
-
 	public TYPE SemantMe()
 	{
 		TYPE t;
@@ -72,26 +73,33 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************/
 		/* [0] return type */
 		/*******************/
-		returnType = SYMBOL_TABLE.getInstance().find(returnTypeName);
+		returnType = SYMBOL_TABLE.getInstance().find(type.type);
+		if(type.type == "void"){
+			returnType = TYPE_VOID.getInstance();
+		}
 		if (returnType == null)
 		{
-			System.out.format(">> ERROR [%d:%d] non existing return type %s\n",6,6,returnType);				
+			System.out.format(">> ERROR non existing return type %s\n",returnType);				
 		}
 	
 		/****************************/
 		/* [1] Begin Function Scope */
 		/****************************/
 		SYMBOL_TABLE.getInstance().beginScope();
-
+		/***************************/
+		/* enter 'return' to scope table so return stmts will now the returnType */
+		/* Since it's a saved word, IDs not allowed to have this name */
+		/***************************/
+		SYMBOL_TABLE.getInstance().enter("return", returnType);
 		/***************************/
 		/* [2] Semant Input Params */
 		/***************************/
-		for (AST_TYPE_NAME_LIST it = params; it  != null; it = it.tail)
+		for (AST_ARGS_LIST it = args; it != null; it = it.tail)
 		{
-			t = SYMBOL_TABLE.getInstance().find(it.head.type);
+			t = SYMBOL_TABLE.getInstance().find(it.head.type.type);
 			if (t == null)
 			{
-				System.out.format(">> ERROR [%d:%d] non existing type %s\n",2,2,it.head.type);				
+				System.out.format(">> ERROR non existing type %s\n",it.head.type.type);				
 			}
 			else
 			{
@@ -103,7 +111,7 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*******************/
 		/* [3] Semant Body */
 		/*******************/
-		body.SemantMe();
+		content.SemantMe();
 
 		/*****************/
 		/* [4] End Scope */
@@ -120,5 +128,4 @@ public class AST_DEC_FUNC extends AST_DEC
 		/*********************************************************/
 		return null;		
 	}
-	
 }

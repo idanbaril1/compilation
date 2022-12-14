@@ -1,51 +1,48 @@
 package AST;
 
-import TYPES.*;
-
-public class AST_EXP_STRING extends AST_EXP
+public class AST_VAR_SIMPLE extends AST_VAR
 {
-	public String value;
+	/************************/
+	/* simple variable name */
+	/************************/
+	public String name;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_STRING(String value)
+	public AST_VAR_SIMPLE(String name)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
 		/******************************/
 		SerialNumber = AST_Node_Serial_Number.getFresh();
-
+	
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.format("====================== exp -> STRING( %s )\n", value);
+		System.out.format("====================== var -> ID( %s )\n",name);
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.value = value;
+		this.name = name;
 	}
 
-	/************************************************/
-	/* The printing message for an INT EXP AST node */
-	/************************************************/
+	/**************************************************/
+	/* The printing message for a simple var AST node */
+	/**************************************************/
 	public void PrintMe()
 	{
-		/*******************************/
-		/* AST NODE TYPE = AST INT EXP */
-		/*******************************/
-		System.out.format("AST NODE STRING( %s )\n",value);
+		/**********************************/
+		/* AST NODE TYPE = AST SIMPLE VAR */
+		/**********************************/
+		System.out.format("AST NODE SIMPLE VAR( %s )\n",name);
 
 		/*********************************/
 		/* Print to AST GRAPHIZ DOT file */
 		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			String.format("STRING(%s)",value));
-	}
-	public TYPE SemantMe()
-	{
-		return TYPE_STRING.getInstance();
+			String.format("SIMPLE\nVAR\n(%s)",name));
 	}
 }

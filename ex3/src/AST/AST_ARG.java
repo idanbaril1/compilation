@@ -1,13 +1,16 @@
 package AST;
 
-public class AST_EXP_VAR extends AST_EXP
+import TYPES.*;
+
+public class AST_ARG extends AST_EXP
 {
-	public AST_VAR var;
+	public AST_TYPE type;
+	public String name;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_VAR(AST_VAR var)
+	public AST_ARG(AST_TYPE type, String name)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -17,12 +20,13 @@ public class AST_EXP_VAR extends AST_EXP
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== exp -> var\n");
+		System.out.print("====================== arg -> type name\n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.var = var;
+		this.type = type;
+		this.name = name;
 	}
 	
 	/***********************************************/
@@ -33,24 +37,31 @@ public class AST_EXP_VAR extends AST_EXP
 		/************************************/
 		/* AST NODE TYPE = EXP VAR AST NODE */
 		/************************************/
-		System.out.print("AST NODE EXP VAR\n");
+		System.out.print("AST NODE ARG\n");
 
 		/*****************************/
 		/* RECURSIVELY PRINT var ... */
 		/*****************************/
-		if (var != null) var.PrintMe();
+		if (type != null) type.PrintMe();
 		
 		/*********************************/
 		/* Print to AST GRAPHIZ DOT file */
 		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"EXP\nVAR");
+			"ARG\nTYPE ID");
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
 			
 	}
+	public TYPE SemantMe()
+	{
+		/*********************************************************/
+		/* [4] Return value is irrelevant */
+		/*********************************************************/
+		return null;		
+	}	
 }

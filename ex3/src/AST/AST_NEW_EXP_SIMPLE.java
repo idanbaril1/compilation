@@ -1,22 +1,18 @@
 package AST;
 
 import TYPES.*;
-import SYMBOL_TABLE.*;
 
-public class AST_DEC_VAR extends AST_DEC_ABSTRACT
+public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 {
 	/***************/
-	/*  type ID [= exp]; */
+	/*  new type */
 	/***************/
-	public String name;
 	public AST_TYPE type;
-	public AST_EXP exp;
-	public AST_NEW_EXP newExp;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_VAR(String name, AST_TYPE type, AST_EXP exp, AST_NEW_EXP newExp)
+	public AST_NEW_EXP_SIMPLE(AST_TYPE type)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -26,15 +22,12 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== type ID [= exp];\n");
+		System.out.print("====================== new type\n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.name = name;
 		this.type = type;
-		this.exp = exp;
-		this.newExp = newExp;
 	}
 
 	/*********************************************************/
@@ -45,21 +38,19 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		/********************************************/
 		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
 		/********************************************/
-		System.out.print("AST VAR DEC STMT\n");
+		System.out.print("AST NEW EXP SIMPLE STMT\n");
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"VAR DEC\ntype ID [= exp/newExp];\n");
+			"new type\n");
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
-		if(exp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
-		if(newExp != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,newExp.SerialNumber);
 	}
 	public TYPE SemantMe()
 	{
@@ -73,24 +64,15 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		{
 			System.out.format(">> ERROR non existing type %s\n",type.type);
 			System.exit(0);
+		}	
+		if(t == TYPE_INT.getInstance() || t == TYPE_STRING.getInstance()){
+			System.out.format(">> ERROR new expression can't have primitive type %s\n",type.type);
+			System.exit(0);
 		}
-		
-		/**************************************/
-		/* [2] Check That Name does NOT exist */
-		/**************************************/
-		if (SYMBOL_TABLE.getInstance().find(name) != null)
-		{
-			System.out.format(">> ERROR variable %s already exists in scope\n",name);				
-		}
-
-		/***************************************************/
-		/* [3] Enter the Variable Type to the Symbol Table */
-		/***************************************************/
-		SYMBOL_TABLE.getInstance().enter(name,t);
 
 		/*********************************************************/
-		/* [4] Return value is irrelevant for var declarations */
+		/* [4] Return value is irrelevant */
 		/*********************************************************/
 		return null;		
-	}
+	}	
 }

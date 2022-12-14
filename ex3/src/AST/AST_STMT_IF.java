@@ -1,7 +1,6 @@
 package AST;
 
 import TYPES.*;
-import SYMBOL_TABLE.*;
 
 public class AST_STMT_IF extends AST_STMT
 {
@@ -13,18 +12,10 @@ public class AST_STMT_IF extends AST_STMT
 	/*******************/
 	public AST_STMT_IF(AST_EXP cond,AST_STMT_LIST body)
 	{
-		/******************************/
-		/* SET A UNIQUE SERIAL NUMBER */
-		/******************************/
-		SerialNumber = AST_Node_Serial_Number.getFresh();
-
 		this.cond = cond;
 		this.body = body;
+		SerialNumber = AST_Node_Serial_Number.getFresh();
 	}
-
-	/*************************************************/
-	/* The printing message for a binop exp AST node */
-	/*************************************************/
 	public void PrintMe()
 	{
 		/*************************************/
@@ -59,7 +50,7 @@ public class AST_STMT_IF extends AST_STMT
 		/****************************/
 		if (cond.SemantMe() != TYPE_INT.getInstance())
 		{
-			System.out.format(">> ERROR [%d:%d] condition inside IF is not integral\n",2,2);
+			System.out.format(">> ERROR condition inside IF is not integral\n");
 		}
 		
 		/*************************/

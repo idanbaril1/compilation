@@ -2,18 +2,18 @@ package AST;
 
 import TYPES.*;
 
-public class AST_DEC_LIST extends AST_Node
+public class AST_CFIELD_LIST extends AST_Node
 {
 	/****************/
 	/* DATA MEMBERS */
 	/****************/
-	public AST_DEC head;
-	public AST_DEC_LIST tail;
+	public AST_CFIELD head;
+	public AST_CFIELD_LIST tail;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_DEC_LIST(AST_DEC head,AST_DEC_LIST tail)
+	public AST_CFIELD_LIST(AST_CFIELD head,AST_CFIELD_LIST tail)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -23,8 +23,8 @@ public class AST_DEC_LIST extends AST_Node
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		if (tail != null) System.out.print("====================== decs -> dec decs\n");
-		if (tail == null) System.out.print("====================== decs -> dec      \n");
+		if (tail != null) System.out.print("====================== cFields -> cField cFields\n");
+		if (tail == null) System.out.print("====================== cFields -> cField \n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
@@ -41,7 +41,7 @@ public class AST_DEC_LIST extends AST_Node
 		/**************************************/
 		/* AST NODE TYPE = AST STATEMENT LIST */
 		/**************************************/
-		System.out.print("AST NODE STMT LIST\n");
+		System.out.print("AST NODE CFIELDS LIST\n");
 
 		/*************************************/
 		/* RECURSIVELY PRINT HEAD + TAIL ... */
@@ -54,7 +54,7 @@ public class AST_DEC_LIST extends AST_Node
 		/**********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"DEC\nLIST\n");
+			"CFIELDS\nLIST\n");
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */

@@ -1,13 +1,13 @@
 package AST;
 
-public class AST_EXP_VAR extends AST_EXP
+public class AST_PROGRAM extends AST_Node
 {
-	public AST_VAR var;
+	public AST_DEC_LIST dl;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_VAR(AST_VAR var)
+	public AST_PROGRAM(AST_DEC_LIST dl)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -17,12 +17,12 @@ public class AST_EXP_VAR extends AST_EXP
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== exp -> var\n");
+		System.out.print("====================== Program -> dec+\n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.var = var;
+		this.dl = dl;
 	}
 	
 	/***********************************************/
@@ -33,24 +33,24 @@ public class AST_EXP_VAR extends AST_EXP
 		/************************************/
 		/* AST NODE TYPE = EXP VAR AST NODE */
 		/************************************/
-		System.out.print("AST NODE EXP VAR\n");
+		System.out.print("AST NODE PROGRAM\n");
 
 		/*****************************/
 		/* RECURSIVELY PRINT var ... */
 		/*****************************/
-		if (var != null) var.PrintMe();
+		if (dl != null) dl.PrintMe();
 		
 		/*********************************/
 		/* Print to AST GRAPHIZ DOT file */
 		/*********************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"EXP\nVAR");
+			"PROGRAM\nDEC_LIST");
 
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,dl.SerialNumber);
 			
 	}
 }

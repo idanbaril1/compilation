@@ -48,19 +48,18 @@ public class AST_EXP_BINOP extends AST_EXP
 		if (OP == 4) {sOP = "<";}
 		if (OP == 5) {sOP = ">";}
 		if (OP == 6) {sOP = "=";}
-
+		
 		/*************************************/
-		/* AST NODE TYPE = AST SUBSCRIPT VAR */
+		/* AST NODE TYPE = AST BINOP EXP */
 		/*************************************/
 		System.out.print("AST NODE BINOP EXP\n");
-		System.out.format("BINOP EXP(%s)\n",sOP);
 
 		/**************************************/
 		/* RECURSIVELY PRINT left + right ... */
 		/**************************************/
 		if (left != null) left.PrintMe();
 		if (right != null) right.PrintMe();
-
+		
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
@@ -87,16 +86,18 @@ public class AST_EXP_BINOP extends AST_EXP
 				return TYPE_INT.getInstance();
 			}
 			if(t1.isClass() && t2.isClass()){
-				TYPE_CLASS type1 = t1.father;
-				TYPE_CLASS type2 = t2.father;
-				if(type1.father == type2 || type2.father == type1){
+				if(t1.father == t2 || t2.father == t1){
 					return TYPE_INT.getInstance();
 				}
-				System.out.format(">> ERROR [%d:%d] cannot make binop between %s and %s\n",t1,t2);	
+				System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	
 				System.exit(0);
 				return null;
 			}
-			if((t1.isClass() || t1.isArray()) && t2)
+			if((t1.isClass() || t1.isArray()) && t2 == TYPE_NIL.getInstance()){
+				return TYPE_INT.getInstance();
+			}
+			System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	
+			System.exit(0);
 		}
 		
 		if ((t1 == TYPE_INT.getInstance()) && (t2 == TYPE_INT.getInstance()))
@@ -106,9 +107,8 @@ public class AST_EXP_BINOP extends AST_EXP
 		if((OP==0) && (t1 == TYPE_STRING.getInstance()) && (t2 == TYPE_STRING.getInstance())){
 			return TYPE_STRING.getInstance();
 		}
-		System.out.format(">> ERROR [%d:%d] cannot make binop between %s and %s\n",t1,t2);	
+		System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	
 		System.exit(0);
 		return null;
 	}
-
 }

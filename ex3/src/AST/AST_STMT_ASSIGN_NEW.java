@@ -1,19 +1,17 @@
 package AST;
 
-import TYPES.*;
-
-public class AST_STMT_ASSIGN extends AST_STMT
+public class AST_STMT_ASSIGN_NEW extends AST_STMT
 {
 	/***************/
-	/*  var := exp */
+	/*  var := newExp; */
 	/***************/
 	public AST_VAR var;
-	public AST_EXP exp;
+	public AST_NEW_EXP ne;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_ASSIGN(AST_VAR var,AST_EXP exp)
+	public AST_STMT_ASSIGN_NEW(AST_VAR var, AST_NEW_EXP ne)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -23,13 +21,13 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== stmt -> var ASSIGN exp SEMICOLON\n");
+		System.out.print("====================== stmt -> var ASSIGN newExp SEMICOLON\n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.var = var;
-		this.exp = exp;
+		this.ne = ne;
 	}
 
 	/*********************************************************/
@@ -46,7 +44,7 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/* RECURSIVELY PRINT VAR + EXP ... */
 		/***********************************/
 		if (var != null) var.PrintMe();
-		if (exp != null) exp.PrintMe();
+		if (ne != null) ne.PrintMe();
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
@@ -59,27 +57,6 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
-	}
-	public TYPE SemantMe()
-	{
-		TYPE t1 = null;
-		TYPE t2 = null;
-		
-		if (var != null) t1 = var.SemantMe();
-		if (exp != null) t2 = exp.SemantMe();
-		
-		if((t1.isClass() || t1.isArray()) && t2 == TYPE_NIL.getInstance()){
-			return null;
-		}
-		if(t1.isClass() && t2.isClass() && t2.father == t1){			
-			return null;	
-		}
-		if (t1 != t2)
-		{
-			System.out.format(">> ERROR type mismatch for var := exp\n");	
-			System.exit(0);
-		}
-		return null;
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,ne.SerialNumber);
 	}
 }

@@ -2,18 +2,17 @@ package AST;
 
 import TYPES.*;
 
-public class AST_STMT_ASSIGN extends AST_STMT
+public class AST_CFIELD_VAR extends AST_CFIELD
 {
 	/***************/
-	/*  var := exp */
+	/*  varDec */
 	/***************/
-	public AST_VAR var;
-	public AST_EXP exp;
+	public AST_DEC_VAR vd;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_ASSIGN(AST_VAR var,AST_EXP exp)
+	public AST_CFIELD_VAR(AST_DEC_VAR vd)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -23,63 +22,43 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== stmt -> var ASSIGN exp SEMICOLON\n");
+		System.out.print("====================== varDec\n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
-		this.var = var;
-		this.exp = exp;
+		this.vd = vd;
 	}
 
 	/*********************************************************/
-	/* The printing message for an assign statement AST node */
+	/* The printing message for an dec array AST node */
 	/*********************************************************/
 	public void PrintMe()
 	{
 		/********************************************/
 		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
 		/********************************************/
-		System.out.print("AST NODE ASSIGN STMT\n");
-
-		/***********************************/
-		/* RECURSIVELY PRINT VAR + EXP ... */
-		/***********************************/
-		if (var != null) var.PrintMe();
-		if (exp != null) exp.PrintMe();
+		System.out.print("AST CFIELD VAR STMT\n");
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"ASSIGN\nleft := right\n");
+			"VAR DEC\n");
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,exp.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,vd.SerialNumber);
 	}
 	public TYPE SemantMe()
 	{
-		TYPE t1 = null;
-		TYPE t2 = null;
-		
-		if (var != null) t1 = var.SemantMe();
-		if (exp != null) t2 = exp.SemantMe();
-		
-		if((t1.isClass() || t1.isArray()) && t2 == TYPE_NIL.getInstance()){
-			return null;
-		}
-		if(t1.isClass() && t2.isClass() && t2.father == t1){			
-			return null;	
-		}
-		if (t1 != t2)
-		{
-			System.out.format(">> ERROR type mismatch for var := exp\n");	
-			System.exit(0);
-		}
-		return null;
-	}
+		if(vd != null) vd.SemantMe();
+
+		/*********************************************************/
+		/* [4] Return value is irrelevant */
+		/*********************************************************/
+		return null;		
+	}	
 }

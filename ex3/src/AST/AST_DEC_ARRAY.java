@@ -3,19 +3,18 @@ package AST;
 import TYPES.*;
 import SYMBOL_TABLE.*;
 
-public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
+public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 {
 	/***************/
-	/*  class ID [extends id] {cField [cField]*} */
+	/*  array ID = type[]; */
 	/***************/
 	public String name;
-	public String fatherName;
-	public AST_CFIELD_LIST content;
+	public AST_TYPE type;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_CLASS(String name, String fatherName, AST_CFIELD_LIST content)
+	public AST_DEC_ARRAY(String name, AST_TYPE type)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -25,14 +24,13 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/***************************************/
 		/* PRINT CORRESPONDING DERIVATION RULE */
 		/***************************************/
-		System.out.print("====================== classDec -> class ID [extends id] {cField [cField]*}\n");
+		System.out.print("====================== arrayTypedef -> array ID = type[];\n");
 
 		/*******************************/
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.name = name;
-		this.fatherName = fatherName;
-		this.content = content;
+		this.type = type;
 	}
 
 	/*********************************************************/
@@ -43,53 +41,53 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/********************************************/
 		/* AST NODE TYPE = AST ASSIGNMENT STATEMENT */
 		/********************************************/
-		System.out.print("AST CLASS DEC STMT\n");
+		System.out.print("AST ARRAY DEC STMT\n");
+
+		/***********************************/
+		/* RECURSIVELY PRINT VAR + EXP ... */
+		/***********************************/		
 
 		/***************************************/
 		/* PRINT Node to AST GRAPHVIZ DOT file */
 		/***************************************/
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
-			"CLASS DEC\nclass ID [extends id] {cField [cField]*}\n");
+			"ARRAY DEC\narray ID = type[];\n");
 		
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
-		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,content.SerialNumber);
+		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,type.SerialNumber);
 	}
 	public TYPE SemantMe()
-	{	
-		TYPE_CLASS fatherClass = null;
-		if(fatherName != null){
-			fatherClass = SYMBOL_TABLE.getInstance().find(fatherName);
+	{
+		TYPE t;
+	
+		/****************************/
+		/* [1] Check If Type exists */
+		/****************************/
+		t = SYMBOL_TABLE.getInstance().find(type.type);
+		if (t == null)
+		{
+			System.out.format(">> ERROR array def with non existing type %s\n",type.type);
+			System.exit(0);
 		}
 		
-		/*************************/
-		/* [1] Begin Class Scope */
-		/*************************/
-		SYMBOL_TABLE.getInstance().beginScope();
-
-		/***************************/
-		/* [2] Semant Data Members */
-		/***************************/
-		TYPE_CLASS t = new TYPE_CLASS(fatherClass,name,content.SemantMe());
-
-		/*****************/
-		/* [3] End Scope */
-		/*****************/
-		SYMBOL_TABLE.getInstance().endScope();
-
-		/************************************************/
-		/* [4] Enter the Class Type to the Symbol Table */
-		/************************************************/
+		/**************************************/
+		/* [2] Check That Name does NOT exist */
+		/**************************************/
 		if (SYMBOL_TABLE.getInstance().find(name) != null)
 		{
-			System.out.format(">> ERROR class name %s already exists\n",name);				
+			System.out.format(">> ERROR name %s already exists\n",name);				
 		}
-		SYMBOL_TABLE.getInstance().enter(name,t);
+		
+		/***************************************************/
+		/* [3] Enter the Variable Type to the Symbol Table */
+		/***************************************************/
+		SYMBOL_TABLE.getInstance().enter(name, new TYPE_ARRAY(t));
 
 		/*********************************************************/
-		/* [5] Return value is irrelevant for class declarations */
+		/* [4] Return value is irrelevant for var declarations */
 		/*********************************************************/
 		return null;		
 	}
