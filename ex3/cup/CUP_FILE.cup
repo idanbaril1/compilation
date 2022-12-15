@@ -140,9 +140,9 @@ argsList	::=		arg:a COMMA	argsList:al		{: RESULT = new AST_ARGS_LIST(a,al);    :
 cFieldList	::=		cField:cf cFieldList:cfl		{: RESULT = new AST_CFIELD_LIST(cf,cfl);    :}
 					| cField:cf							{: RESULT = new AST_CFIELD_LIST(cf,null); :}
 					;
-type		::=		TYPE_INT						{: RESULT = new AST_TYPE("TYPE_INT");      :}
-					| TYPE_STRING					{: RESULT = new AST_TYPE("TYPE_STRING");      :}
-					| TYPE_VOID						{: RESULT = new AST_TYPE("TYPE_VOID");      :}
+type		::=		TYPE_INT						{: RESULT = new AST_TYPE("int");      :}
+					| TYPE_STRING					{: RESULT = new AST_TYPE("string");      :}
+					| TYPE_VOID						{: RESULT = new AST_TYPE("void");      :}
 					| ID:t							{: RESULT = new AST_TYPE(t);      :}
 					;	
 arg			::=		type:t ID:name			{: RESULT = new AST_ARG(t, name);       :}

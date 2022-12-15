@@ -79,7 +79,7 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		}
 		if (returnType == null)
 		{
-			System.out.format(">> ERROR non existing return type %s\n",returnType);				
+			System.out.format(">> ERROR non existing return type %s\n",type.type);				
 		}
 	
 		/****************************/

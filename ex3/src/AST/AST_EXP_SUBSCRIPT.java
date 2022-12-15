@@ -1,5 +1,8 @@
 package AST;
 
+import TYPES.*;
+import SYMBOL_TABLE.*;
+
 public class AST_EXP_SUBSCRIPT extends AST_EXP
 {
 	/***************/
@@ -60,5 +63,36 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		/****************************************/
 		if (var != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		if(expList != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,expList.SerialNumber);
+	}
+	public TYPE SemantMe()
+	{
+		TYPE fieldType;
+		if(var != null){
+			TYPE varType = var.SemantMe();
+			if (varType == null)
+			{
+				System.out.format(">> ERROR non existing variable with field %s\n",fieldName);
+				System.exit(0);
+			}
+			if (!varType.isClass())
+			{
+				System.out.format(">> ERROR variable isn't of classType and has no field %s\n",fieldName);
+				System.exit(0);
+			}
+		}
+		// need to search in class scope
+		fieldType = SYMBOL_TABLE.getInstance().find(fieldName);
+		if (fieldType == null)
+		{
+			System.out.format(">> ERROR %s doesn't exist in scope\n", fieldName);
+			System.exit(0);
+		}
+		if(!(fieldType instanceof TYPE_FUNCTION)){
+			System.out.format(">> ERROR %s can't be called as a method\n", fieldName);
+			System.exit(0);
+		}
+						
+		TYPE_FUNCTION functionFieldType = (TYPE_FUNCTION)fieldType;			
+		return functionFieldType.returnType;		
 	}
 }

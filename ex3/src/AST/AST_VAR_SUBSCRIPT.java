@@ -1,5 +1,7 @@
 package AST;
 
+import TYPES.*;
+
 public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
 	public AST_VAR var;
@@ -55,5 +57,29 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		/****************************************/
 		if (var       != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 		if (subscript != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,subscript.SerialNumber);
+	}
+	public TYPE SemantMe()
+	{
+		TYPE varType = var.SemantMe();
+		TYPE subType;
+		
+		if (varType == null)
+		{
+			System.out.format(">> ERROR non existing variable called as array\n");
+			System.exit(0);
+		}
+		if (!varType.isArray()){
+			System.out.format(">> ERROR variable that isn't array Can't be called with []\n");
+			System.exit(0);
+		}
+		// need to search in class scope
+		subType = subscript.SemantMe();
+		if (subType != TYPE_INT.getInstance())
+		{
+			System.out.format(">> ERROR array must be called with integral index\n");
+			System.exit(0);
+		}
+		TYPE_ARRAY arrVarType = (TYPE_ARRAY)varType;		
+		return arrVarType.innerType;		
 	}
 }

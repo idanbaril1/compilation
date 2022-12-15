@@ -61,7 +61,7 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 	{	
 		TYPE_CLASS fatherClass = null;
 		if(fatherName != null){
-			fatherClass = SYMBOL_TABLE.getInstance().find(fatherName);
+			fatherClass = (TYPE_CLASS)SYMBOL_TABLE.getInstance().find(fatherName);
 		}
 		
 		/*************************/
@@ -72,7 +72,7 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/***************************/
 		/* [2] Semant Data Members */
 		/***************************/
-		TYPE_CLASS t = new TYPE_CLASS(fatherClass,name,content.SemantMe());
+		TYPE_CLASS t = new TYPE_CLASS(fatherClass,name,(TYPE_LIST)content.SemantMe());
 
 		/*****************/
 		/* [3] End Scope */

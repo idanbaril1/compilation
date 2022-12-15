@@ -77,6 +77,8 @@ public class AST_EXP_BINOP extends AST_EXP
 	{
 		TYPE t1 = null;
 		TYPE t2 = null;
+		TYPE_CLASS tc1 = null;
+		TYPE_CLASS tc2 = null;
 		
 		if (left  != null) t1 = left.SemantMe();
 		if (right != null) t2 = right.SemantMe();
@@ -86,7 +88,9 @@ public class AST_EXP_BINOP extends AST_EXP
 				return TYPE_INT.getInstance();
 			}
 			if(t1.isClass() && t2.isClass()){
-				if(t1.father == t2 || t2.father == t1){
+				tc1 = (TYPE_CLASS)t1;
+				tc2 = (TYPE_CLASS)t2;
+				if(tc1.father == tc2 || tc2.father == tc1){
 					return TYPE_INT.getInstance();
 				}
 				System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	

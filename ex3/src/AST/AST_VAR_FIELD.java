@@ -1,5 +1,8 @@
 package AST;
 
+import TYPES.*;
+import SYMBOL_TABLE.*;
+
 public class AST_VAR_FIELD extends AST_VAR
 {
 	public AST_VAR var;
@@ -54,5 +57,25 @@ public class AST_VAR_FIELD extends AST_VAR
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (var != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
+	}
+	public TYPE SemantMe()
+	{
+		TYPE varType = var.SemantMe();
+		TYPE fieldType;
+		
+		if (varType == null)
+		{
+			System.out.format(">> ERROR non existing variable %s with field\n",fieldName);
+			System.exit(0);
+		}
+		// need to search in class scope
+		fieldType = SYMBOL_TABLE.getInstance().find(fieldName);
+		if (fieldType == null)
+		{
+			System.out.format(">> ERROR %s isn't a field of the var\n", fieldName);
+			System.exit(0);
+		}
+						
+		return fieldType;		
 	}
 }

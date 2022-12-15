@@ -1,5 +1,8 @@
 package AST;
 
+import TYPES.*;
+import SYMBOL_TABLE.*;
+
 public class AST_TYPE extends AST_Node
 {
 	/***************/
@@ -48,5 +51,18 @@ public class AST_TYPE extends AST_Node
 		/****************************************/
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
+	}
+	public TYPE SemantMe()
+	{
+		TYPE t;
+	
+		t = SYMBOL_TABLE.getInstance().find(type);
+		if (t == null)
+		{
+			System.out.format(">> ERROR non existing type %s\n",type);
+			System.exit(0);
+		}
+						
+		return t;		
 	}
 }

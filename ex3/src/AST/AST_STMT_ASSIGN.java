@@ -65,6 +65,8 @@ public class AST_STMT_ASSIGN extends AST_STMT
 	{
 		TYPE t1 = null;
 		TYPE t2 = null;
+		TYPE_CLASS tc1 = null;
+		TYPE_CLASS tc2 = null;
 		
 		if (var != null) t1 = var.SemantMe();
 		if (exp != null) t2 = exp.SemantMe();
@@ -72,8 +74,10 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		if((t1.isClass() || t1.isArray()) && t2 == TYPE_NIL.getInstance()){
 			return null;
 		}
-		if(t1.isClass() && t2.isClass() && t2.father == t1){			
-			return null;	
+		if(t1.isClass() && t2.isClass()){	
+			tc1 = (TYPE_CLASS)t1;
+			tc2 = (TYPE_CLASS)t2;
+			if(tc2.father == tc1) return null;	
 		}
 		if (t1 != t2)
 		{

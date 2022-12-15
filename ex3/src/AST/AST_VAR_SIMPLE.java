@@ -1,5 +1,8 @@
 package AST;
 
+import TYPES.*;
+import SYMBOL_TABLE.*;
+
 public class AST_VAR_SIMPLE extends AST_VAR
 {
 	/************************/
@@ -44,5 +47,18 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		AST_GRAPHVIZ.getInstance().logNode(
 			SerialNumber,
 			String.format("SIMPLE\nVAR\n(%s)",name));
+	}
+	public TYPE SemantMe()
+	{
+		TYPE t;
+	
+		t = SYMBOL_TABLE.getInstance().find(name);
+		if (t == null)
+		{
+			System.out.format(">> ERROR non existing variable %s\n",name);
+			System.exit(0);
+		}
+						
+		return t;		
 	}
 }

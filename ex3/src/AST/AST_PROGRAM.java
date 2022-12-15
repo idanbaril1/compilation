@@ -1,5 +1,7 @@
 package AST;
 
+import TYPES.*;
+
 public class AST_PROGRAM extends AST_Node
 {
 	public AST_DEC_LIST dl;
@@ -53,4 +55,13 @@ public class AST_PROGRAM extends AST_Node
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,dl.SerialNumber);
 			
 	}
+	public TYPE SemantMe()
+	{
+		if(dl!=null) dl.SemantMe();		
+
+		/*********************************************************/
+		/* [4] Return value is irrelevant */
+		/*********************************************************/
+		return null;		
+	}	
 }

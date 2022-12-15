@@ -1,5 +1,7 @@
 package AST;
 
+import TYPES.*;
+
 public class AST_EXP_PAREN extends AST_EXP
 {
 	public AST_EXP e;
@@ -51,5 +53,14 @@ public class AST_EXP_PAREN extends AST_EXP
 		/* PRINT Edges to AST GRAPHVIZ DOT file */
 		/****************************************/
 		if (e != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,e.SerialNumber);
+	}
+	public TYPE SemantMe()
+	{
+		TYPE t = null;
+		if (e != null){
+			t = e.SemantMe();
+		}
+		
+		return t;
 	}
 }

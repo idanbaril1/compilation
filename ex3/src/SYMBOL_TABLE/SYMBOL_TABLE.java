@@ -266,7 +266,7 @@ public class SYMBOL_TABLE
 					TYPE_VOID.getInstance(),
 					"PrintString",
 					new TYPE_LIST(
-						TYPE_String.getInstance(),
+						TYPE_STRING.getInstance(),
 						null)));
 			instance.enter(
 				"PrintInt",

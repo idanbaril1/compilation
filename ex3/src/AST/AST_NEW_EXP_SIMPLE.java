@@ -1,6 +1,7 @@
 package AST;
 
 import TYPES.*;
+import SYMBOL_TABLE.*;
 
 public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 {
@@ -71,8 +72,8 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 		}
 
 		/*********************************************************/
-		/* [4] Return value is irrelevant */
+		/* [4] Return value is t */
 		/*********************************************************/
-		return null;		
+		return t;		
 	}	
 }

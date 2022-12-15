@@ -1,5 +1,7 @@
 package AST;
 
+import TYPES.*;
+
 public class AST_EXP_VAR extends AST_EXP
 {
 	public AST_VAR var;
@@ -52,5 +54,14 @@ public class AST_EXP_VAR extends AST_EXP
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,var.SerialNumber);
 			
+	}
+	public TYPE SemantMe()
+	{
+		TYPE t = null;
+		if (var != null){
+			t = var.SemantMe();
+		}
+		
+		return t;
 	}
 }

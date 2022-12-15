@@ -1,6 +1,7 @@
 package AST;
 
 import TYPES.*;
+import SYMBOL_TABLE.*;
 
 public class AST_NEW_EXP_SUBSCRIPT extends AST_NEW_EXP 
 {
@@ -72,14 +73,17 @@ public class AST_NEW_EXP_SUBSCRIPT extends AST_NEW_EXP
 			System.out.format(">> ERROR array declared with non integral size\n");
 			System.exit(0);
 		}
-		if (exp instanceof AST_EXP_INT && exp.value<=0){
-			System.out.format(">> ERROR array declared with <=0 size\n");
-			System.exit(0);
+		if ((exp instanceof AST_EXP_INT)){
+			AST_EXP_INT intexp = (AST_EXP_INT)exp;
+			if(intexp.value<=0){
+				System.out.format(">> ERROR array declared with <=0 size\n");
+				System.exit(0);
+			}		
 		}
 
 		/*********************************************************/
 		/* [4] Return value is irrelevant */
 		/*********************************************************/
-		return null;		
+		return new TYPE_ARRAY(t);
 	}	
 }
