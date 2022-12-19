@@ -1,6 +1,7 @@
 package AST;
 
 import TYPES.*;
+import SYMBOL_TABLE.*;
 
 public class AST_ARG extends AST_EXP
 {
@@ -59,9 +60,15 @@ public class AST_ARG extends AST_EXP
 	}
 	public TYPE SemantMe()
 	{
+		TYPE t = type.SemantMe();
+		if (t == null){
+			System.out.format(">> ERROR non existing type %s \n",type.type);	
+			System.exit(0);
+		}
+		SYMBOL_TABLE.getInstance().enter(name,t);
 		/*********************************************************/
-		/* [4] Return value is irrelevant */
+		/* [4] Return value is type */
 		/*********************************************************/
-		return null;		
+		return t;		
 	}	
 }

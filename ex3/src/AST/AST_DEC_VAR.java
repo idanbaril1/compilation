@@ -76,11 +76,12 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		}
 		
 		/**************************************/
-		/* [2] Check That Name does NOT exist */
+		/* [2] Check That Name does NOT exist in scope */
 		/**************************************/
-		if (SYMBOL_TABLE.getInstance().find(name) != null)
+		if (SYMBOL_TABLE.getInstance().findInScope(name) != null)
 		{
-			System.out.format(">> ERROR variable %s already exists in scope\n",name);				
+			System.out.format(">> ERROR variable %s already exists in scope\n",name);	
+			System.exit(0);
 		}
 
 		/***************************************************/

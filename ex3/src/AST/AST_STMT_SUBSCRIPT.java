@@ -92,7 +92,36 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 			System.out.format(">> ERROR %s can't be called as a method\n", id);
 			System.exit(0);
 		}
-		TYPE_FUNCTION functionFieldType = (TYPE_FUNCTION)fieldType;			
+		TYPE_FUNCTION functionFieldType = (TYPE_FUNCTION)fieldType;	
+		TYPE_LIST expectedTypes = functionFieldType.params;
+		TYPE_LIST argsTypes = expList.SemantMe();
+		while(argsTypes != null && expectedTypes != null){
+			TYPE argType = argsTypes.head;
+			TYPE expectedType = expectedTypes.head;
+			if (argType != expectedType){
+				if (!((expectedType.isArray() || expectedType.isClass()) && argType == TYPE_NIL.getInstance())){
+					if (expectedType.isClass() && argType.isClass()){
+						TYPE_CLASS tcarg = (TYPE_CLASS)argType;
+						TYPE_CLASS tcexp = (TYPE_CLASS)expectedType;
+						if(!(tcarg.father == tcexp)){
+							System.out.format(">> ERROR %s called with unmatching argType %s\n", id, expectedType.isArray());
+							System.exit(0);
+						}
+					}
+					else{
+						System.out.format(">> ERROR %s called with unmatching argType %s\n", id, expectedType.isArray());
+						System.exit(0);
+					}				
+				}
+			}						
+			argsTypes = argsTypes.tail;
+			expectedTypes = expectedTypes.tail;
+		}
+		if (argsTypes != null || expectedTypes != null){
+			System.out.format(">> ERROR args number is not as expected in func %s\n", id);
+			System.exit(0);
+		}
+		
 		return functionFieldType.returnType;		
 	}
 }

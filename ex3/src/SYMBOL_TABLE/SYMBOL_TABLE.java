@@ -97,6 +97,24 @@ public class SYMBOL_TABLE
 		
 		return null;
 	}
+	/***********************************************/
+	/* Find *only* in the inner-most scope element with name */
+	/***********************************************/
+	public TYPE findInScope(String name)
+	{
+		SYMBOL_TABLE_ENTRY e;
+				
+		for (e = top; e!=null && e.name != "SCOPE-BOUNDARY"; e = e.prevtop)
+		{
+			if (name.equals(e.name))
+			{
+				return e.type;
+			}
+			
+		}
+		
+		return null;
+	}
 
 	/***************************************************************************/
 	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */

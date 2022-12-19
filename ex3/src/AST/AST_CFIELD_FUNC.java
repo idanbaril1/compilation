@@ -54,11 +54,14 @@ public class AST_CFIELD_FUNC extends AST_CFIELD
 	}
 	public TYPE SemantMe()
 	{
-		if(fd != null) fd.SemantMe();
+		TYPE t = null;
+		if(fd != null){ 
+			t = fd.SemantMe();
+		}
 
 		/*********************************************************/
-		/* [4] Return value is irrelevant */
+		/* [4] Return value is t */
 		/*********************************************************/
-		return null;		
+		return t;		
 	}	
 }

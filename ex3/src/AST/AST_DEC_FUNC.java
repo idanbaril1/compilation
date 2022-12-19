@@ -81,31 +81,29 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		{
 			System.out.format(">> ERROR non existing return type %s\n",type.type);				
 		}
+		/**************************************/
+		/* Check That Name does NOT exist in scope */
+		/**************************************/
+		if (SYMBOL_TABLE.getInstance().findInScope(name) != null)
+		{
+			System.out.format(">> ERROR function %s already exists in scope\n",name);	
+			System.exit(0);
+		}
 	
 		/****************************/
 		/* [1] Begin Function Scope */
 		/****************************/
 		SYMBOL_TABLE.getInstance().beginScope();
 		/***************************/
-		/* enter 'return' to scope table so return stmts will now the returnType */
+		/* enter 'return' to scope table so return stmts will know the returnType */
 		/* Since it's a saved word, IDs not allowed to have this name */
 		/***************************/
 		SYMBOL_TABLE.getInstance().enter("return", returnType);
 		/***************************/
 		/* [2] Semant Input Params */
 		/***************************/
-		for (AST_ARGS_LIST it = args; it != null; it = it.tail)
-		{
-			t = SYMBOL_TABLE.getInstance().find(it.head.type.type);
-			if (t == null)
-			{
-				System.out.format(">> ERROR non existing type %s\n",it.head.type.type);				
-			}
-			else
-			{
-				type_list = new TYPE_LIST(t,type_list);
-				SYMBOL_TABLE.getInstance().enter(it.head.name,t);
-			}
+		if (args != null){
+			type_list = args.SemantMe();
 		}
 
 		/*******************/

@@ -54,11 +54,14 @@ public class AST_CFIELD_VAR extends AST_CFIELD
 	}
 	public TYPE SemantMe()
 	{
-		if(vd != null) vd.SemantMe();
+		TYPE t = null;
+		if(vd != null){ 
+			t = vd.SemantMe();
+		}
 
 		/*********************************************************/
-		/* [4] Return value is irrelevant */
+		/* [4] Return value is t */
 		/*********************************************************/
-		return null;		
+		return t;	
 	}	
 }
