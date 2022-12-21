@@ -103,6 +103,15 @@ public class AST_EXP_BINOP extends AST_EXP
 			System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	
 			System.exit(0);
 		}
+		if(OP==3){
+			if ((right instanceof AST_EXP_INT)){
+				AST_EXP_INT intexp = (AST_EXP_INT)right;
+				if(intexp.value==0){
+					System.out.format(">> ERROR can't divide by const zero\n");
+					System.exit(0);
+				}		
+			}
+		}
 		
 		if ((t1 == TYPE_INT.getInstance()) && (t2 == TYPE_INT.getInstance()))
 		{

@@ -52,16 +52,16 @@ public class AST_CFIELD_VAR extends AST_CFIELD
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,vd.SerialNumber);
 	}
-	public TYPE SemantMe()
+	public TYPE SemantMe(TYPE_CLASS fatherClass)
 	{
 		TYPE t = null;
 		if(vd != null){ 
-			t = vd.SemantMe();
+			t = vd.SemantMe(fatherClass);
 		}
 
 		/*********************************************************/
 		/* [4] Return value is t */
 		/*********************************************************/
-		return t;	
+		return new TYPE_CLASS_VAR_DEC(t, vd.name);	
 	}	
 }

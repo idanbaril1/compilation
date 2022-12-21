@@ -64,7 +64,7 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		if(args!=null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,args.SerialNumber);
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,content.SerialNumber);
 	}
-	public TYPE SemantMe()
+	public TYPE SemantMe(TYPE_CLASS fatherClass)
 	{
 		TYPE t;
 		TYPE returnType = null;
@@ -79,7 +79,8 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		}
 		if (returnType == null)
 		{
-			System.out.format(">> ERROR non existing return type %s\n",type.type);				
+			System.out.format(">> ERROR non existing return type %s\n",type.type);	
+			System.exit(0);			
 		}
 		/**************************************/
 		/* Check That Name does NOT exist in scope */
@@ -89,7 +90,47 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 			System.out.format(">> ERROR function %s already exists in scope\n",name);	
 			System.exit(0);
 		}
-	
+		if (fatherClass != null){
+			TYPE fatherMember = fatherClass.findFieldInClass(name);
+			if (fatherMember!=null){
+				System.out.format(">> ERROR can't override field %s with method\n",name);	
+				System.exit(0);
+			}
+			fatherMember = fatherClass.findMethodInClass(name);
+			if(fatherMember != null){
+				TYPE_FUNCTION fatherMethod = (TYPE_FUNCTION)fatherMember;
+				if(fatherMethod.returnType != returnType){					
+					System.out.format(">> ERROR can't override function %s with different return type\n",name);	
+					System.exit(0);
+				}
+				TYPE_LIST expectedTypes = fatherMethod.params;
+				TYPE_LIST argsTypes = args.SemantMe();
+				TYPE argType = null;
+				TYPE expectedType = null;
+				TYPE_CLASS tcarg = null;
+				TYPE_CLASS tcexp = null;
+				while(argsTypes != null && expectedTypes != null){
+					argType = argsTypes.head;
+					expectedType = expectedTypes.head;
+					if (argType != expectedType){
+						System.out.format(">> ERROR can't overload method %s with different arg types\n",name);
+						System.exit(0);
+					}						
+					argsTypes = argsTypes.tail;
+					expectedTypes = expectedTypes.tail;
+				}
+				if (argsTypes != null || expectedTypes != null){
+					System.out.format(">> ERROR can't overload method %s with different amount of args %s\n", name);
+					System.exit(0);
+				}	
+			}
+		}
+		else{
+			if (!SYMBOL_TABLE.getInstance().isInGlobalScope()){
+				System.out.format(">> ERROR function %s can only be defined in global scope\n",name);
+				System.exit(0);
+			}
+		}
 		/****************************/
 		/* [1] Begin Function Scope */
 		/****************************/

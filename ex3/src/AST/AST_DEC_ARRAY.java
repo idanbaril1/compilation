@@ -61,6 +61,11 @@ public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 	}
 	public TYPE SemantMe()
 	{
+		
+		if (!SYMBOL_TABLE.getInstance().isInGlobalScope()){
+			System.out.format(">> ERROR array %s can only be defined in global scope\n",name);
+			System.exit(0);
+		}
 		TYPE t;
 	
 		/****************************/
@@ -84,7 +89,7 @@ public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 		/***************************************************/
 		/* [3] Enter the Variable Type to the Symbol Table */
 		/***************************************************/
-		SYMBOL_TABLE.getInstance().enter(name, new TYPE_ARRAY(t));
+		SYMBOL_TABLE.getInstance().enter(name, new TYPE_ARRAY(name, t));
 
 		/*********************************************************/
 		/* [4] Return value is irrelevant for var declarations */

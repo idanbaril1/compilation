@@ -60,7 +60,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
 	public TYPE SemantMe()
 	{
 		TYPE t = null;
-		if (vd != null) t = vd.SemantMe();
+		if (vd != null) t = vd.SemantMe(null);
 		return t;
 	}
 }

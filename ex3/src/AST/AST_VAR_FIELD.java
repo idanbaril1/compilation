@@ -68,8 +68,14 @@ public class AST_VAR_FIELD extends AST_VAR
 			System.out.format(">> ERROR non existing variable %s with field\n",fieldName);
 			System.exit(0);
 		}
-		// need to search in class scope
-		fieldType = SYMBOL_TABLE.getInstance().find(fieldName);
+		if (!varType.isClass())
+		{
+			System.out.format(">> ERROR variable not typeClass and has no field %s\n",fieldName);
+			System.exit(0);
+		}
+		TYPE_CLASS varClass = (TYPE_CLASS)varType;
+		
+		fieldType = varClass.findFieldInClass(fieldName);
 		if (fieldType == null)
 		{
 			System.out.format(">> ERROR %s isn't a field of the var\n", fieldName);

@@ -84,7 +84,7 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		if(t1.isArray() && t2.isArray()){
 			ta1 = (TYPE_ARRAY)t1;
 			ta2 = (TYPE_ARRAY)t2;
-			if(ta1.innerType == ta2.innerType) return null;
+			if(ta1.innerType == ta2.innerType && (ta1.name == ta2.name || ta2.name == null)) return null;
 		}
 		if (t1 != t2)
 		{

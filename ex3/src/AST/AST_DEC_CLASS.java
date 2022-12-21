@@ -59,6 +59,10 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 	}
 	public TYPE SemantMe()
 	{	
+		if (!SYMBOL_TABLE.getInstance().isInGlobalScope()){
+			System.out.format(">> ERROR class %s can only be defined in global scope\n",name);
+			System.exit(0);
+		}
 		TYPE_CLASS fatherClass = null;
 		if(fatherName != null){
 			fatherClass = (TYPE_CLASS)SYMBOL_TABLE.getInstance().find(fatherName);
@@ -72,7 +76,7 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/***************************/
 		/* [2] Semant Data Members */
 		/***************************/
-		TYPE_CLASS t = new TYPE_CLASS(fatherClass,name,(TYPE_LIST)content.SemantMe());
+		TYPE_CLASS t = new TYPE_CLASS(fatherClass,name,(TYPE_LIST)content.SemantMe(fatherClass));
 
 		/*****************/
 		/* [3] End Scope */
@@ -84,7 +88,8 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/************************************************/
 		if (SYMBOL_TABLE.getInstance().find(name) != null)
 		{
-			System.out.format(">> ERROR class name %s already exists\n",name);				
+			System.out.format(">> ERROR class name %s already exists\n",name);
+			System.exit(0);
 		}
 		SYMBOL_TABLE.getInstance().enter(name,t);
 

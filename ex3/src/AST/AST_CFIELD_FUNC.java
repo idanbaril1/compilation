@@ -52,11 +52,11 @@ public class AST_CFIELD_FUNC extends AST_CFIELD
 		/****************************************/
 		AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,fd.SerialNumber);
 	}
-	public TYPE SemantMe()
+	public TYPE SemantMe(TYPE_CLASS fatherClass)
 	{
 		TYPE t = null;
 		if(fd != null){ 
-			t = fd.SemantMe();
+			t = fd.SemantMe(fatherClass);
 		}
 
 		/*********************************************************/

@@ -79,31 +79,42 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 				System.out.format(">> ERROR variable isn't of classType and has no field %s\n",fieldName);
 				System.exit(0);
 			}
+			TYPE_CLASS varClass = (TYPE_CLASS)varType;
+			fieldType = varClass.findMethodInClass(fieldName);
+			if (fieldType==null){
+				System.out.format(">> ERROR field %s isn't a method of the class\n",fieldName);
+				System.exit(0);
+			}
 		}
-		// need to search in class scope
-		fieldType = SYMBOL_TABLE.getInstance().find(fieldName);
-		if (fieldType == null)
-		{
-			System.out.format(">> ERROR %s doesn't exist in scope\n", fieldName);
-			System.exit(0);
-		}
-		if(!(fieldType instanceof TYPE_FUNCTION)){
-			System.out.format(">> ERROR %s can't be called as a method\n", fieldName);
-			System.exit(0);
+		else{
+			fieldType = SYMBOL_TABLE.getInstance().find(fieldName);
+			if (fieldType == null)
+			{
+				System.out.format(">> ERROR %s doesn't exist in scope\n", fieldName);
+				System.exit(0);
+			}
+			if(!(fieldType instanceof TYPE_FUNCTION)){
+				System.out.format(">> ERROR %s can't be called as a function\n", fieldName);
+				System.exit(0);
+			}
 		}
 						
 		TYPE_FUNCTION functionFieldType = (TYPE_FUNCTION)fieldType;
 		TYPE_LIST expectedTypes = functionFieldType.params;
 		TYPE_LIST argsTypes = expList.SemantMe();
+		TYPE argType = null;
+		TYPE expectedType = null;
+		TYPE_CLASS tcarg = null;
+		TYPE_CLASS tcexp = null;
 		while(argsTypes != null && expectedTypes != null){
-			TYPE argType = argsTypes.head;
-			TYPE expectedType = expectedTypes.head;
+			argType = argsTypes.head;
+			expectedType = expectedTypes.head;
 			if (argType != expectedType){
 				if (!((expectedType.isArray() || expectedType.isClass()) && argType == TYPE_NIL.getInstance())){
 					if (expectedType.isClass() && argType.isClass()){
-						TYPE_CLASS tcarg = (TYPE_CLASS)argType;
-						TYPE_CLASS tcexp = (TYPE_CLASS)expectedType;
-						if(!(tcarg.father == tcexp)){
+						tcarg = (TYPE_CLASS)argType;
+						tcexp = (TYPE_CLASS)expectedType;
+						if(tcarg.father != tcexp){
 							System.out.format(">> ERROR %s called with unmatching argType %s\n", fieldName, expectedType.isArray());
 							System.exit(0);
 						}

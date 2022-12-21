@@ -305,4 +305,18 @@ public class SYMBOL_TABLE
 		}
 		return instance;
 	}
+	
+	public boolean isInGlobalScope(){
+		SYMBOL_TABLE_ENTRY e;
+				
+		for (e = top; e!=null; e = e.prevtop)
+		{
+			if (e.name == "SCOPE-BOUNDARY")
+			{
+				return false;
+			}
+			
+		}		
+		return true;
+	}
 }

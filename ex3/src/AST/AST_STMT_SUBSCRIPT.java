@@ -79,19 +79,26 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 				System.out.format(">> ERROR variable isn't of classType and has no fields, including field %s\n",id);
 				System.exit(0);
 			}
+			TYPE_CLASS varClass = (TYPE_CLASS)varType;
+			fieldType = varClass.findMethodInClass(id);
+			if (fieldType==null){
+				System.out.format(">> ERROR field %s isn't a method of the class\n",id);
+				System.exit(0);
+			}
+		}
+		else{
+			fieldType = SYMBOL_TABLE.getInstance().find(id);
+			if (fieldType == null)
+			{
+				System.out.format(">> ERROR %s doesn't exist\n", id);
+				System.exit(0);
+			}
+			if(!(fieldType instanceof TYPE_FUNCTION)){
+			System.out.format(">> ERROR %s can't be called as a function\n", id);
+			System.exit(0);
+			}
 		}
 			
-		// need to search in class scope if it's a method
-		fieldType = SYMBOL_TABLE.getInstance().find(id);
-		if (fieldType == null)
-		{
-			System.out.format(">> ERROR %s doesn't exist\n", id);
-			System.exit(0);
-		}
-		if(!(fieldType instanceof TYPE_FUNCTION)){
-			System.out.format(">> ERROR %s can't be called as a method\n", id);
-			System.exit(0);
-		}
 		TYPE_FUNCTION functionFieldType = (TYPE_FUNCTION)fieldType;	
 		TYPE_LIST expectedTypes = functionFieldType.params;
 		TYPE_LIST argsTypes = expList.SemantMe();
@@ -103,7 +110,7 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 					if (expectedType.isClass() && argType.isClass()){
 						TYPE_CLASS tcarg = (TYPE_CLASS)argType;
 						TYPE_CLASS tcexp = (TYPE_CLASS)expectedType;
-						if(!(tcarg.father == tcexp)){
+						if(tcarg.father != tcexp){
 							System.out.format(">> ERROR %s called with unmatching argType %s\n", id, expectedType.isArray());
 							System.exit(0);
 						}

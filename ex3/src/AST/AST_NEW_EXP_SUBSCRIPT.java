@@ -82,8 +82,8 @@ public class AST_NEW_EXP_SUBSCRIPT extends AST_NEW_EXP
 		}
 
 		/*********************************************************/
-		/* [4] Return value is irrelevant */
+		/* [4] Return value */
 		/*********************************************************/
-		return new TYPE_ARRAY(t);
+		return new TYPE_ARRAY(null, t);
 	}	
 }

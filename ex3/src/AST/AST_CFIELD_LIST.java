@@ -62,15 +62,15 @@ public class AST_CFIELD_LIST extends AST_Node
 		if (head != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,head.SerialNumber);
 		if (tail != null) AST_GRAPHVIZ.getInstance().logEdge(SerialNumber,tail.SerialNumber);
 	}
-	public TYPE_LIST SemantMe()
+	public TYPE_LIST SemantMe(TYPE_CLASS fatherClass)
 	{
 		TYPE t1 = null;
 		TYPE_LIST t2 = null;
 		if(head!=null) {
-			t1 = head.SemantMe();
+			t1 = head.SemantMe(fatherClass);
 		}
 		if(tail!=null) {
-			t2 = tail.SemantMe();
+			t2 = tail.SemantMe(fatherClass);
 		}
 
 		/*********************************************************/
