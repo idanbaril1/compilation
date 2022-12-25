@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_VAR_FIELD extends AST_VAR
 {
@@ -11,7 +12,7 @@ public class AST_VAR_FIELD extends AST_VAR
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_FIELD(AST_VAR var,String fieldName)
+	public AST_VAR_FIELD(AST_VAR var,String fieldName,int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -28,6 +29,8 @@ public class AST_VAR_FIELD extends AST_VAR
 		/*******************************/
 		this.var = var;
 		this.fieldName = fieldName;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*************************************************/
@@ -66,11 +69,17 @@ public class AST_VAR_FIELD extends AST_VAR
 		if (varType == null)
 		{
 			System.out.format(">> ERROR non existing variable %s with field\n",fieldName);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
 			System.exit(0);
 		}
 		if (!varType.isClass())
 		{
 			System.out.format(">> ERROR variable not typeClass and has no field %s\n",fieldName);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
 			System.exit(0);
 		}
 		TYPE_CLASS varClass = (TYPE_CLASS)varType;
@@ -78,7 +87,10 @@ public class AST_VAR_FIELD extends AST_VAR
 		fieldType = varClass.findFieldInClass(fieldName);
 		if (fieldType == null)
 		{
-			System.out.format(">> ERROR %s isn't a field of the var\n", fieldName);
+			System.out.format(">> ERROR %s isn't a field of class %s\n", fieldName, varClass.name);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
 			System.exit(0);
 		}
 						

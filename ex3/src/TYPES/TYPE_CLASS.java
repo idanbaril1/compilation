@@ -33,23 +33,25 @@ public class TYPE_CLASS extends TYPE
 			member = members.head;
 			if(member instanceof TYPE_FUNCTION){
 				method = (TYPE_FUNCTION)member;
-				if(method.name == name){
+				if(method.name.equals(name)){
 					return method;
 				}
 			}
 			members = members.tail;
 		}
 		//search in father class
-		members = father.data_members;
-		while(members!=null){
-			member = members.head;
-			if(member instanceof TYPE_FUNCTION){
-				method = (TYPE_FUNCTION)member;
-				if(method.name == name){
-					return method;
+		if (father!=null){
+			members = father.data_members;
+			while(members!=null){
+				member = members.head;
+				if(member instanceof TYPE_FUNCTION){
+					method = (TYPE_FUNCTION)member;
+					if(method.name.equals(name)){
+						return method;
+					}
 				}
+				members = members.tail;
 			}
-			members = members.tail;
 		}
 		return null;
 	}
@@ -63,24 +65,27 @@ public class TYPE_CLASS extends TYPE
 			member = members.head;
 			if(member instanceof TYPE_CLASS_VAR_DEC){
 				field = (TYPE_CLASS_VAR_DEC)member;
-				if(field.name == name){
+				if(field.name.equals(name)){
 					return field.t;
 				}
 			}
 			members = members.tail;
 		}
 		// search in father class
-		members = father.data_members;
-		while(members!=null){
-			member = members.head;
-			if(member instanceof TYPE_CLASS_VAR_DEC){
-				field = (TYPE_CLASS_VAR_DEC)member;
-				if(field.name == name){
-					return field.t;
+		if (father!=null){
+			members = father.data_members;
+			while(members!=null){
+				member = members.head;
+				if(member instanceof TYPE_CLASS_VAR_DEC){
+					field = (TYPE_CLASS_VAR_DEC)member;
+					if(field.name.equals(name)){
+						return field.t;
+					}
 				}
+				members = members.tail;
 			}
-			members = members.tail;
 		}
+		
 		return null;
 	}
 }

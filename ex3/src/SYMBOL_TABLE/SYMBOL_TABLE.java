@@ -294,13 +294,6 @@ public class SYMBOL_TABLE
 					new TYPE_LIST(
 						TYPE_INT.getInstance(),
 						null)));
-			instance.enter(
-				"PrintTrace",
-				new TYPE_FUNCTION(
-					TYPE_VOID.getInstance(),
-					"PrintTrace",
-					new TYPE_LIST(null,
-						null)));
 			
 		}
 		return instance;
@@ -311,7 +304,7 @@ public class SYMBOL_TABLE
 				
 		for (e = top; e!=null; e = e.prevtop)
 		{
-			if (e.name == "SCOPE-BOUNDARY")
+			if (e.name.equals("SCOPE-BOUNDARY"))
 			{
 				return false;
 			}

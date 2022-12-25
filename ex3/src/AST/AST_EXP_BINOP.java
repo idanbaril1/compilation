@@ -1,17 +1,20 @@
 package AST;
 
 import TYPES.*;
+import java.io.PrintWriter;
 
 public class AST_EXP_BINOP extends AST_EXP
 {
 	int OP;
 	public AST_EXP left;
 	public AST_EXP right;
+	public PrintWriter fileWriter;
+	public int lineNumber;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_EXP_BINOP(AST_EXP left,AST_EXP right,int OP)
+	public AST_EXP_BINOP(AST_EXP left,AST_EXP right,int OP, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -29,6 +32,8 @@ public class AST_EXP_BINOP extends AST_EXP
 		this.left = left;
 		this.right = right;
 		this.OP = OP;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 	
 	/*************************************************/
@@ -93,7 +98,9 @@ public class AST_EXP_BINOP extends AST_EXP
 				if(tc1.father == tc2 || tc2.father == tc1){
 					return TYPE_INT.getInstance();
 				}
-				System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	
+				System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 				return null;
 			}
@@ -101,6 +108,9 @@ public class AST_EXP_BINOP extends AST_EXP
 				return TYPE_INT.getInstance();
 			}
 			System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
 			System.exit(0);
 		}
 		if(OP==3){
@@ -108,6 +118,9 @@ public class AST_EXP_BINOP extends AST_EXP
 				AST_EXP_INT intexp = (AST_EXP_INT)right;
 				if(intexp.value==0){
 					System.out.format(">> ERROR can't divide by const zero\n");
+					fileWriter.write("ERROR(" + lineNumber + ")");
+					fileWriter.close();
+
 					System.exit(0);
 				}		
 			}
@@ -121,6 +134,8 @@ public class AST_EXP_BINOP extends AST_EXP
 			return TYPE_STRING.getInstance();
 		}
 		System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	
+		fileWriter.write("ERROR(" + lineNumber + ")");
+		fileWriter.close();
 		System.exit(0);
 		return null;
 	}

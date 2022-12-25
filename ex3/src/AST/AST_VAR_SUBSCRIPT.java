@@ -1,6 +1,7 @@
 package AST;
 
 import TYPES.*;
+import java.io.PrintWriter;
 
 public class AST_VAR_SUBSCRIPT extends AST_VAR
 {
@@ -10,7 +11,7 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_SUBSCRIPT(AST_VAR var,AST_EXP subscript)
+	public AST_VAR_SUBSCRIPT(AST_VAR var,AST_EXP subscript,int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -27,6 +28,8 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		/*******************************/
 		this.var = var;
 		this.subscript = subscript;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*****************************************************/
@@ -66,10 +69,16 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		if (varType == null)
 		{
 			System.out.format(">> ERROR non existing variable called as array\n");
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
 			System.exit(0);
 		}
 		if (!varType.isArray()){
 			System.out.format(">> ERROR variable that isn't array Can't be called with []\n");
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
 			System.exit(0);
 		}
 		// need to search in class scope
@@ -77,6 +86,9 @@ public class AST_VAR_SUBSCRIPT extends AST_VAR
 		if (subType != TYPE_INT.getInstance())
 		{
 			System.out.format(">> ERROR array must be called with integral index\n");
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
 			System.exit(0);
 		}
 		TYPE_ARRAY arrVarType = (TYPE_ARRAY)varType;		

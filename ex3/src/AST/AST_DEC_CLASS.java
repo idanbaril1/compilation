@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 {
@@ -11,11 +12,13 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 	public String name;
 	public String fatherName;
 	public AST_CFIELD_LIST content;
+	public PrintWriter fileWriter;
+	public int lineNumber;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_CLASS(String name, String fatherName, AST_CFIELD_LIST content)
+	public AST_DEC_CLASS(String name, String fatherName, AST_CFIELD_LIST content, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -33,6 +36,8 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		this.name = name;
 		this.fatherName = fatherName;
 		this.content = content;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -61,6 +66,8 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 	{	
 		if (!SYMBOL_TABLE.getInstance().isInGlobalScope()){
 			System.out.format(">> ERROR class %s can only be defined in global scope\n",name);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		TYPE_CLASS fatherClass = null;
@@ -72,7 +79,8 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/* [1] Begin Class Scope */
 		/*************************/
 		SYMBOL_TABLE.getInstance().beginScope();
-
+		/* place holder for fields with type of the class */
+		SYMBOL_TABLE.getInstance().enter(name,new TYPE_CLASS(fatherClass,name, null));
 		/***************************/
 		/* [2] Semant Data Members */
 		/***************************/
@@ -89,6 +97,8 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		if (SYMBOL_TABLE.getInstance().find(name) != null)
 		{
 			System.out.format(">> ERROR class name %s already exists\n",name);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		SYMBOL_TABLE.getInstance().enter(name,t);

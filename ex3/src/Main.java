@@ -47,8 +47,7 @@ public class Main
 			/*************************/
 			/* [6] Print the AST ... */
 			/*************************/
-			AST.PrintMe();
-			
+			AST.SemantMe();
 			file_writer.print("OK");
 			/*************************/
 			/* [7] Close output file */

@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_EXP_SUBSCRIPT extends AST_EXP
 {
@@ -11,11 +12,13 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 	public AST_VAR var;
 	public String fieldName;
 	public AST_EXP_LIST expList;
+	public PrintWriter fileWriter;
+	public int lineNumber;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_EXP_SUBSCRIPT(AST_VAR var, String fieldName, AST_EXP_LIST expList)
+	public AST_EXP_SUBSCRIPT(AST_VAR var, String fieldName, AST_EXP_LIST expList, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -33,6 +36,8 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		this.var = var;
 		this.fieldName = fieldName;
 		this.expList = expList;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -72,17 +77,23 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 			if (varType == null)
 			{
 				System.out.format(">> ERROR non existing variable with field %s\n",fieldName);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 			}
 			if (!varType.isClass())
 			{
 				System.out.format(">> ERROR variable isn't of classType and has no field %s\n",fieldName);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 			}
 			TYPE_CLASS varClass = (TYPE_CLASS)varType;
 			fieldType = varClass.findMethodInClass(fieldName);
 			if (fieldType==null){
 				System.out.format(">> ERROR field %s isn't a method of the class\n",fieldName);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 			}
 		}
@@ -91,17 +102,24 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 			if (fieldType == null)
 			{
 				System.out.format(">> ERROR %s doesn't exist in scope\n", fieldName);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 			}
 			if(!(fieldType instanceof TYPE_FUNCTION)){
 				System.out.format(">> ERROR %s can't be called as a function\n", fieldName);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 			}
 		}
 						
 		TYPE_FUNCTION functionFieldType = (TYPE_FUNCTION)fieldType;
 		TYPE_LIST expectedTypes = functionFieldType.params;
-		TYPE_LIST argsTypes = expList.SemantMe();
+		TYPE_LIST argsTypes = null;
+		if (expList != null){
+			argsTypes = expList.SemantMe();
+		}
 		TYPE argType = null;
 		TYPE expectedType = null;
 		TYPE_CLASS tcarg = null;
@@ -114,13 +132,17 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 					if (expectedType.isClass() && argType.isClass()){
 						tcarg = (TYPE_CLASS)argType;
 						tcexp = (TYPE_CLASS)expectedType;
-						if(tcarg.father != tcexp){
-							System.out.format(">> ERROR %s called with unmatching argType %s\n", fieldName, expectedType.isArray());
+						if(tcarg.father != tcexp && tcarg.name != tcexp.name){
+							System.out.format(">> ERROR %s called with unmatching argType %s\n", fieldName, expectedType.name);
+							fileWriter.write("ERROR(" + lineNumber + ")");
+							fileWriter.close();
 							System.exit(0);
 						}
 					}
 					else{
-						System.out.format(">> ERROR %s called with unmatching argType %s\n", fieldName, expectedType.isArray());
+						System.out.format(">> ERROR %s called with unmatching argType %s\n", fieldName,expectedType.name);
+						fileWriter.write("ERROR(" + lineNumber + ")");
+						fileWriter.close();
 						System.exit(0);
 					}				
 				}
@@ -130,6 +152,8 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		}
 		if (argsTypes != null || expectedTypes != null){
 			System.out.format(">> ERROR args number is not as expected in func %s\n", fieldName);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}		
 		return functionFieldType.returnType;		

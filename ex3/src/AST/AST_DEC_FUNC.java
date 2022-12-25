@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 {
@@ -12,11 +13,13 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 	public AST_TYPE type;
 	public AST_ARGS_LIST args;
 	public AST_STMT_LIST content;
+	public PrintWriter fileWriter;
+	public int lineNumber;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_FUNC(String name, AST_TYPE type, AST_ARGS_LIST args, AST_STMT_LIST content)
+	public AST_DEC_FUNC(String name, AST_TYPE type, AST_ARGS_LIST args, AST_STMT_LIST content, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -35,6 +38,8 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		this.type = type;
 		this.args = args;
 		this.content = content;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -80,6 +85,8 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		if (returnType == null)
 		{
 			System.out.format(">> ERROR non existing return type %s\n",type.type);	
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);			
 		}
 		/**************************************/
@@ -88,12 +95,16 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		if (SYMBOL_TABLE.getInstance().findInScope(name) != null)
 		{
 			System.out.format(">> ERROR function %s already exists in scope\n",name);	
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		if (fatherClass != null){
 			TYPE fatherMember = fatherClass.findFieldInClass(name);
 			if (fatherMember!=null){
-				System.out.format(">> ERROR can't override field %s with method\n",name);	
+				System.out.format(">> ERROR can't override field %s with method\n",name);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();				
 				System.exit(0);
 			}
 			fatherMember = fatherClass.findMethodInClass(name);
@@ -101,6 +112,8 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 				TYPE_FUNCTION fatherMethod = (TYPE_FUNCTION)fatherMember;
 				if(fatherMethod.returnType != returnType){					
 					System.out.format(">> ERROR can't override function %s with different return type\n",name);	
+					fileWriter.write("ERROR(" + lineNumber + ")");
+					fileWriter.close();
 					System.exit(0);
 				}
 				TYPE_LIST expectedTypes = fatherMethod.params;
@@ -114,6 +127,8 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 					expectedType = expectedTypes.head;
 					if (argType != expectedType){
 						System.out.format(">> ERROR can't overload method %s with different arg types\n",name);
+						fileWriter.write("ERROR(" + lineNumber + ")");
+						fileWriter.close();
 						System.exit(0);
 					}						
 					argsTypes = argsTypes.tail;
@@ -121,16 +136,13 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 				}
 				if (argsTypes != null || expectedTypes != null){
 					System.out.format(">> ERROR can't overload method %s with different amount of args %s\n", name);
+					fileWriter.write("ERROR(" + lineNumber + ")");
+					fileWriter.close();
 					System.exit(0);
 				}	
 			}
 		}
-		else{
-			if (!SYMBOL_TABLE.getInstance().isInGlobalScope()){
-				System.out.format(">> ERROR function %s can only be defined in global scope\n",name);
-				System.exit(0);
-			}
-		}
+		
 		/****************************/
 		/* [1] Begin Function Scope */
 		/****************************/
@@ -146,7 +158,8 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 		if (args != null){
 			type_list = args.SemantMe();
 		}
-
+		/* for recursive calls */
+		SYMBOL_TABLE.getInstance().enter(name,new TYPE_FUNCTION(returnType,name,type_list));
 		/*******************/
 		/* [3] Semant Body */
 		/*******************/

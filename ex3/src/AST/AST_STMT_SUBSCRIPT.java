@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_STMT_SUBSCRIPT extends AST_STMT
 {
@@ -15,7 +16,7 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_SUBSCRIPT(AST_VAR var, String id, AST_EXP_LIST expList)
+	public AST_STMT_SUBSCRIPT(AST_VAR var, String id, AST_EXP_LIST expList,int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -33,6 +34,8 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 		this.var = var;
 		this.id = id;
 		this.expList = expList;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -72,17 +75,24 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 			if (varType == null)
 			{
 				System.out.format(">> ERROR non existing variable. Has no field %s\n",id);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 			}
 			if (!varType.isClass())
 			{
 				System.out.format(">> ERROR variable isn't of classType and has no fields, including field %s\n",id);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 			}
 			TYPE_CLASS varClass = (TYPE_CLASS)varType;
 			fieldType = varClass.findMethodInClass(id);
 			if (fieldType==null){
 				System.out.format(">> ERROR field %s isn't a method of the class\n",id);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
+
 				System.exit(0);
 			}
 		}
@@ -91,17 +101,26 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 			if (fieldType == null)
 			{
 				System.out.format(">> ERROR %s doesn't exist\n", id);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
+
 				System.exit(0);
 			}
 			if(!(fieldType instanceof TYPE_FUNCTION)){
 			System.out.format(">> ERROR %s can't be called as a function\n", id);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+
 			System.exit(0);
 			}
 		}
 			
 		TYPE_FUNCTION functionFieldType = (TYPE_FUNCTION)fieldType;	
 		TYPE_LIST expectedTypes = functionFieldType.params;
-		TYPE_LIST argsTypes = expList.SemantMe();
+		TYPE_LIST argsTypes = null;
+		if (expList != null){
+			argsTypes = expList.SemantMe();
+		}
 		while(argsTypes != null && expectedTypes != null){
 			TYPE argType = argsTypes.head;
 			TYPE expectedType = expectedTypes.head;
@@ -110,13 +129,19 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 					if (expectedType.isClass() && argType.isClass()){
 						TYPE_CLASS tcarg = (TYPE_CLASS)argType;
 						TYPE_CLASS tcexp = (TYPE_CLASS)expectedType;
-						if(tcarg.father != tcexp){
+						if(tcarg.father != tcexp && tcarg.name != tcexp.name){
 							System.out.format(">> ERROR %s called with unmatching argType %s\n", id, expectedType.isArray());
+							fileWriter.write("ERROR(" + lineNumber + ")");
+							fileWriter.close();
+
 							System.exit(0);
 						}
 					}
 					else{
 						System.out.format(">> ERROR %s called with unmatching argType %s\n", id, expectedType.isArray());
+						fileWriter.write("ERROR(" + lineNumber + ")");
+						fileWriter.close();
+
 						System.exit(0);
 					}				
 				}
@@ -126,6 +151,8 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 		}
 		if (argsTypes != null || expectedTypes != null){
 			System.out.format(">> ERROR args number is not as expected in func %s\n", id);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		

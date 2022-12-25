@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_STMT_RETURN extends AST_STMT
 {
@@ -13,9 +14,11 @@ public class AST_STMT_RETURN extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_RETURN(AST_EXP exp)
+	public AST_STMT_RETURN(AST_EXP exp, int lineNumber, PrintWriter fileWriter)
 	{
 		this.exp = exp;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 		
 		SerialNumber = AST_Node_Serial_Number.getFresh();
 	}
@@ -44,7 +47,9 @@ public class AST_STMT_RETURN extends AST_STMT
 		if(exp != null) t = exp.SemantMe();		
 		TYPE expectedReturnType = SYMBOL_TABLE.getInstance().find("return");
 		if (expectedReturnType == null){
-			System.out.format(">> ERROR no returnType in function scope");	
+			System.out.format(">> ERROR no returnType in function scope");
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();			
 			System.exit(0);
 		}
 		
@@ -52,6 +57,8 @@ public class AST_STMT_RETURN extends AST_STMT
 		
 		if(expectedReturnType != t){
 			System.out.format(">> ERROR expectedReturnType is %s and return stmt's type is %s", expectedReturnType, t);	
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		

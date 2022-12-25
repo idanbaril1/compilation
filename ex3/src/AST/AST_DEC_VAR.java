@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 {
@@ -12,11 +13,13 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 	public AST_TYPE type;
 	public AST_EXP exp;
 	public AST_NEW_EXP newExp;
+	public PrintWriter fileWriter;
+	public int lineNumber;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_VAR(String name, AST_TYPE type, AST_EXP exp, AST_NEW_EXP newExp)
+	public AST_DEC_VAR(String name, AST_TYPE type, AST_EXP exp, AST_NEW_EXP newExp, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -35,6 +38,8 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		this.type = type;
 		this.exp = exp;
 		this.newExp = newExp;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -71,7 +76,9 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		t = SYMBOL_TABLE.getInstance().find(type.type);
 		if (t == null)
 		{
-			System.out.format(">> ERROR non existing type %s\n",type.type);
+			System.out.format(">> ERROR %d non existing type %s\n",lineNumber,type.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		
@@ -81,12 +88,16 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		if (SYMBOL_TABLE.getInstance().findInScope(name) != null)
 		{
 			System.out.format(">> ERROR variable %s already exists in scope\n",name);	
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		if (fatherClass != null){
 			TYPE fatherMember = fatherClass.findMethodInClass(name);
 			if(fatherMember != null){
 				System.out.format(">> ERROR can't override method %s with a field\n", name);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 				
 			}	
@@ -94,6 +105,8 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 			if (fatherMember!=null){
 				if (fatherMember != t){
 					System.out.format(">> ERROR can't override field %s with a different type %s\n", name, fatherMember.name);
+					fileWriter.write("ERROR(" + lineNumber + ")");
+					fileWriter.close();
 					System.exit(0);
 				}
 			}
@@ -132,6 +145,8 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 			if (t != expType)
 			{
 				System.out.format(">> ERROR type mismatch for var := exp\n");	
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
 				System.exit(0);
 			}
 		}

@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_VAR_SIMPLE extends AST_VAR
 {
@@ -13,7 +14,7 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_VAR_SIMPLE(String name)
+	public AST_VAR_SIMPLE(String name,int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -29,6 +30,8 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		/* COPY INPUT DATA NENBERS ... */
 		/*******************************/
 		this.name = name;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/**************************************************/
@@ -56,6 +59,8 @@ public class AST_VAR_SIMPLE extends AST_VAR
 		if (t == null)
 		{
 			System.out.format(">> ERROR non existing variable %s\n",name);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 						

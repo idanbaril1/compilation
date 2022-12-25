@@ -1,6 +1,7 @@
 package AST;
 
 import TYPES.*;
+import java.io.PrintWriter;
 
 public class AST_STMT_ASSIGN_NEW extends AST_STMT
 {
@@ -13,7 +14,7 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_ASSIGN_NEW(AST_VAR var, AST_NEW_EXP ne)
+	public AST_STMT_ASSIGN_NEW(AST_VAR var, AST_NEW_EXP ne,int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -30,6 +31,8 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		/*******************************/
 		this.var = var;
 		this.ne = ne;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -79,7 +82,7 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		if(t1.isClass() && t2.isClass()){	
 			tc1 = (TYPE_CLASS)t1;
 			tc2 = (TYPE_CLASS)t2;
-			if(tc2.father == tc1) return null;	
+			if(tc2.father == tc1 || tc1.name == tc2.name) return null;	
 		}
 		if(t1.isArray() && t2.isArray()){
 			ta1 = (TYPE_ARRAY)t1;
@@ -88,7 +91,10 @@ public class AST_STMT_ASSIGN_NEW extends AST_STMT
 		}
 		if (t1 != t2)
 		{
-			System.out.format(">> ERROR type mismatch for var := exp\n");	
+			System.out.format(">> ERROR type mismatch for var := exp\n");
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			
 			System.exit(0);
 		}
 		return null;

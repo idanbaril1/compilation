@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_STMT_IF extends AST_STMT
 {
@@ -11,11 +12,14 @@ public class AST_STMT_IF extends AST_STMT
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_STMT_IF(AST_EXP cond,AST_STMT_LIST body)
+	public AST_STMT_IF(AST_EXP cond,AST_STMT_LIST body,int lineNumber, PrintWriter fileWriter)
 	{
 		this.cond = cond;
 		this.body = body;
 		SerialNumber = AST_Node_Serial_Number.getFresh();
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
+
 	}
 	public void PrintMe()
 	{
@@ -52,6 +56,9 @@ public class AST_STMT_IF extends AST_STMT
 		if (cond.SemantMe() != TYPE_INT.getInstance())
 		{
 			System.out.format(">> ERROR condition inside IF is not integral\n");
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
 		}
 		
 		/*************************/

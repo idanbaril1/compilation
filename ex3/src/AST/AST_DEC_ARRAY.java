@@ -2,6 +2,7 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 {
@@ -10,11 +11,13 @@ public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 	/***************/
 	public String name;
 	public AST_TYPE type;
+	public PrintWriter fileWriter;
+	public int lineNumber;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
-	public AST_DEC_ARRAY(String name, AST_TYPE type)
+	public AST_DEC_ARRAY(String name, AST_TYPE type, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -31,6 +34,8 @@ public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 		/*******************************/
 		this.name = name;
 		this.type = type;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter;
 	}
 
 	/*********************************************************/
@@ -75,6 +80,8 @@ public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 		if (t == null)
 		{
 			System.out.format(">> ERROR array def with non existing type %s\n",type.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		
@@ -83,7 +90,9 @@ public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 		/**************************************/
 		if (SYMBOL_TABLE.getInstance().find(name) != null)
 		{
-			System.out.format(">> ERROR name %s already exists\n",name);				
+			System.out.format(">> ERROR name %s already exists\n",name);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 		}
 		
 		/***************************************************/

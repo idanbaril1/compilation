@@ -1,6 +1,7 @@
 package AST;
 
 import TYPES.*;
+import SYMBOL_TABLE.*;
 
 public class AST_CFIELD_VAR extends AST_CFIELD
 {
@@ -56,7 +57,8 @@ public class AST_CFIELD_VAR extends AST_CFIELD
 	{
 		TYPE t = null;
 		if(vd != null){ 
-			t = vd.SemantMe(fatherClass);
+			vd.SemantMe(fatherClass);
+			t = SYMBOL_TABLE.getInstance().find(vd.name);
 		}
 
 		/*********************************************************/

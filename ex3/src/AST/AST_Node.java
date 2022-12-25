@@ -1,5 +1,7 @@
 package AST;
 import TYPES.*;
+import java.io.PrintWriter;
+
 public abstract class AST_Node
 {
 	/*******************************************/
@@ -8,6 +10,8 @@ public abstract class AST_Node
 	/* a graphviz dot format of the AST ...    */
 	/*******************************************/
 	public int SerialNumber;
+	public int lineNumber;
+	public PrintWriter fileWriter;
 	
 	/***********************************************/
 	/* The default message for an unknown AST node */

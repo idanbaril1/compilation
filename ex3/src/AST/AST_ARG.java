@@ -2,16 +2,19 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import java.io.PrintWriter;
 
 public class AST_ARG extends AST_EXP
 {
 	public AST_TYPE type;
 	public String name;
+	public PrintWriter fileWriter;
+	public int lineNumber;
 
 	/******************/
 	/* CONSTRUCTOR(S) */
 	/******************/
-	public AST_ARG(AST_TYPE type, String name)
+	public AST_ARG(AST_TYPE type, String name, int lineNumber, PrintWriter fileWriter)
 	{
 		/******************************/
 		/* SET A UNIQUE SERIAL NUMBER */
@@ -28,6 +31,8 @@ public class AST_ARG extends AST_EXP
 		/*******************************/
 		this.type = type;
 		this.name = name;
+		this.lineNumber = lineNumber;
+		this.fileWriter = fileWriter; 
 	}
 	
 	/***********************************************/
@@ -62,7 +67,9 @@ public class AST_ARG extends AST_EXP
 	{
 		TYPE t = type.SemantMe();
 		if (t == null){
-			System.out.format(">> ERROR non existing type %s \n",type.type);	
+			System.out.format(">> ERROR non existing type %s \n",type.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
 			System.exit(0);
 		}
 		SYMBOL_TABLE.getInstance().enter(name,t);

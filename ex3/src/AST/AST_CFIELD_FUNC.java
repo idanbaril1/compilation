@@ -1,6 +1,7 @@
 package AST;
 
 import TYPES.*;
+import SYMBOL_TABLE.*;
 
 public class AST_CFIELD_FUNC extends AST_CFIELD
 {
@@ -56,7 +57,8 @@ public class AST_CFIELD_FUNC extends AST_CFIELD
 	{
 		TYPE t = null;
 		if(fd != null){ 
-			t = fd.SemantMe(fatherClass);
+			fd.SemantMe(fatherClass);
+			t = SYMBOL_TABLE.getInstance().find(fd.name);
 		}
 
 		/*********************************************************/
