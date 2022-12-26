@@ -115,6 +115,32 @@ public class SYMBOL_TABLE
 		
 		return null;
 	}
+	/***********************************************/
+	/* Find *only* in the class scope element with name */
+	/***********************************************/
+	public TYPE findInClassScope(String name){
+		SYMBOL_TABLE_ENTRY e = top;
+		TYPE_FOR_SCOPE_BOUNDARIES sb = null;
+				
+		while (e!=null )
+		{
+			while(e!=null && e.name != "SCOPE-BOUNDARY"){
+				if (name.equals(e.name))
+				{
+					return e.type;
+				}
+				e = e.prevtop;	
+			}
+			if (e!=null){
+				sb = (TYPE_FOR_SCOPE_BOUNDARIES)e.type;
+				if (sb.name!="NONE") return null;
+				e = e.prevtop;
+			}	
+			
+		}
+		
+		return null;
+	}
 
 	/***************************************************************************/
 	/* begine scope = Enter the <SCOPE-BOUNDARY> element to the data structure */
@@ -130,6 +156,23 @@ public class SYMBOL_TABLE
 		enter(
 			"SCOPE-BOUNDARY",
 			new TYPE_FOR_SCOPE_BOUNDARIES("NONE"));
+
+		/*********************************************/
+		/* Print the symbol table after every change */
+		/*********************************************/
+		PrintMe();
+	}
+	public void beginScope(String scopeName)
+	{
+		/************************************************************************/
+		/* Though <SCOPE-BOUNDARY> entries are present inside the symbol table, */
+		/* they are not really types. In order to be ablt to debug print them,  */
+		/* a special TYPE_FOR_SCOPE_BOUNDARIES was developed for them. This     */
+		/* class only contain their type name which is the bottom sign: _|_     */
+		/************************************************************************/
+		enter(
+			"SCOPE-BOUNDARY",
+			new TYPE_FOR_SCOPE_BOUNDARIES(scopeName));
 
 		/*********************************************/
 		/* Print the symbol table after every change */
@@ -312,4 +355,24 @@ public class SYMBOL_TABLE
 		}		
 		return true;
 	}
+	
+	public String getClassScopeName(){
+		SYMBOL_TABLE_ENTRY e = top;
+		TYPE_FOR_SCOPE_BOUNDARIES sb = null;
+				
+		while (e!=null )
+		{
+			while(e!=null && e.name != "SCOPE-BOUNDARY"){
+				e = e.prevtop;	
+			}
+			if (e!=null){
+				sb = (TYPE_FOR_SCOPE_BOUNDARIES)e.type;
+				if (sb.name!="NONE") return sb.name;
+				e = e.prevtop;
+			}
+		}
+		
+		return null;
+	}
+	
 }

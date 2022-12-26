@@ -117,7 +117,10 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 					System.exit(0);
 				}
 				TYPE_LIST expectedTypes = fatherMethod.params;
-				TYPE_LIST argsTypes = args.SemantMe();
+				TYPE_LIST argsTypes = null;
+				if(args!=null){
+					argsTypes = args.SemantMe();
+				}					 
 				TYPE argType = null;
 				TYPE expectedType = null;
 				TYPE_CLASS tcarg = null;

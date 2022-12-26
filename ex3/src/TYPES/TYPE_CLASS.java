@@ -39,9 +39,10 @@ public class TYPE_CLASS extends TYPE
 			}
 			members = members.tail;
 		}
-		//search in father class
-		if (father!=null){
-			members = father.data_members;
+		/*search in fathers classes */
+		TYPE_CLASS ancestor = father;
+		while (ancestor!=null){
+			members = ancestor.data_members;
 			while(members!=null){
 				member = members.head;
 				if(member instanceof TYPE_FUNCTION){
@@ -52,6 +53,7 @@ public class TYPE_CLASS extends TYPE
 				}
 				members = members.tail;
 			}
+			ancestor = ancestor.father;
 		}
 		return null;
 	}
@@ -71,9 +73,10 @@ public class TYPE_CLASS extends TYPE
 			}
 			members = members.tail;
 		}
-		// search in father class
-		if (father!=null){
-			members = father.data_members;
+		/*search in fathers classes */
+		TYPE_CLASS ancestor = father;
+		while (ancestor!=null){
+			members = ancestor.data_members;
 			while(members!=null){
 				member = members.head;
 				if(member instanceof TYPE_CLASS_VAR_DEC){
@@ -84,6 +87,7 @@ public class TYPE_CLASS extends TYPE
 				}
 				members = members.tail;
 			}
+			ancestor = ancestor.father;
 		}
 		
 		return null;

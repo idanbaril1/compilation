@@ -69,7 +69,7 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 	}
 	public TYPE SemantMe()
 	{	
-		TYPE fieldType;
+		TYPE fieldType = null;
 		if(var != null){
 			TYPE varType = var.SemantMe();
 			if (varType == null)
@@ -97,7 +97,14 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 			}
 		}
 		else{
-			fieldType = SYMBOL_TABLE.getInstance().find(id);
+			String className = SYMBOL_TABLE.getInstance().getClassScopeName();
+			if (className!=null){
+				TYPE_CLASS scopeClass = (TYPE_CLASS)SYMBOL_TABLE.getInstance().find(className);
+				fieldType = scopeClass.findMethodInClass(id);
+			}
+			if (fieldType == null){
+				fieldType = SYMBOL_TABLE.getInstance().find(id);
+			}			
 			if (fieldType == null)
 			{
 				System.out.format(">> ERROR %s doesn't exist\n", id);

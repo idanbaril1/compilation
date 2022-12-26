@@ -71,7 +71,7 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 	}
 	public TYPE SemantMe()
 	{
-		TYPE fieldType;
+		TYPE fieldType = null;
 		if(var != null){
 			TYPE varType = var.SemantMe();
 			if (varType == null)
@@ -98,7 +98,14 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 			}
 		}
 		else{
-			fieldType = SYMBOL_TABLE.getInstance().find(fieldName);
+			String className = SYMBOL_TABLE.getInstance().getClassScopeName();
+			if (className!=null){
+				TYPE_CLASS scopeClass = (TYPE_CLASS)SYMBOL_TABLE.getInstance().find(className);
+				fieldType = scopeClass.findMethodInClass(fieldName);
+			}
+			if (fieldType == null){
+				fieldType = SYMBOL_TABLE.getInstance().find(fieldName);
+			}			
 			if (fieldType == null)
 			{
 				System.out.format(">> ERROR %s doesn't exist in scope\n", fieldName);

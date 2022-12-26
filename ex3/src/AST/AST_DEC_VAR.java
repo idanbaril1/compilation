@@ -129,10 +129,17 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 			if(t.isClass() && expType.isClass()){	
 				tc1 = (TYPE_CLASS)t;
 				tc2 = (TYPE_CLASS)expType;
-				if(tc2.father == tc1){
+				if(tc1.name == tc2.name) {
 					SYMBOL_TABLE.getInstance().enter(name,t);
 					return null;
-				}	
+				}
+				while(tc2.father!=null){
+					if(tc2.father.name == tc1.name){
+						SYMBOL_TABLE.getInstance().enter(name,t);
+						return null;
+					}
+					tc2 = tc2.father;
+				}
 			}
 			if(t.isArray() && expType.isArray()){
 				ta1 = (TYPE_ARRAY)t;

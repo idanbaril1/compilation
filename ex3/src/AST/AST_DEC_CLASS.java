@@ -78,7 +78,7 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/*************************/
 		/* [1] Begin Class Scope */
 		/*************************/
-		SYMBOL_TABLE.getInstance().beginScope();
+		SYMBOL_TABLE.getInstance().beginScope(name);
 		/* place holder for fields with type of the class */
 		SYMBOL_TABLE.getInstance().enter(name,new TYPE_CLASS(fatherClass,name, null));
 		/***************************/

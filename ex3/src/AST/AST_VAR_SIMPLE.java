@@ -54,14 +54,26 @@ public class AST_VAR_SIMPLE extends AST_VAR
 	public TYPE SemantMe()
 	{
 		TYPE t;
-	
-		t = SYMBOL_TABLE.getInstance().find(name);
+		
+		t = SYMBOL_TABLE.getInstance().findInClassScope(name);
 		if (t == null)
 		{
-			System.out.format(">> ERROR non existing variable %s\n",name);
-			fileWriter.write("ERROR(" + lineNumber + ")");
-			fileWriter.close();
-			System.exit(0);
+			String className = SYMBOL_TABLE.getInstance().getClassScopeName();
+			if (className!=null){
+				TYPE_CLASS scopeClass = (TYPE_CLASS)SYMBOL_TABLE.getInstance().find(className);
+				t = scopeClass.findFieldInClass(name);
+			}
+			if (t == null){
+				t = SYMBOL_TABLE.getInstance().find(name);
+			}			
+			if (t == null)
+			{
+				System.out.format(">> ERROR %s doesn't exist\n", name);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
+
+				System.exit(0);
+			}
 		}
 						
 		return t;		

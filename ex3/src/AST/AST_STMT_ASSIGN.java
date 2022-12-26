@@ -80,7 +80,11 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		if(t1.isClass() && t2.isClass()){	
 			tc1 = (TYPE_CLASS)t1;
 			tc2 = (TYPE_CLASS)t2;
-			if(tc2.father == tc1 || tc1.name == tc2.name) return null;	
+			if(tc1.name == tc2.name) return null;	
+			while(tc2.father!=null){
+				if(tc2.father.name == tc1.name) return null;
+				tc2 = tc2.father;
+			}
 		}
 		if (t1 != t2)
 		{
