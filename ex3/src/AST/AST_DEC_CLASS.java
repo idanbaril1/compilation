@@ -73,6 +73,12 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		TYPE_CLASS fatherClass = null;
 		if(fatherName != null){
 			fatherClass = (TYPE_CLASS)SYMBOL_TABLE.getInstance().find(fatherName);
+			if(fatherClass == null){
+				System.out.format(">> ERROR class %s doesn't exist\n",fatherName);
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();
+				System.exit(0);
+			}
 		}
 		
 		/*************************/
