@@ -156,6 +156,21 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 				fileWriter.close();
 				System.exit(0);
 			}
+			
+			if(SYMBOL_TABLE.getInstance().isClassScope()){
+				if(exp == null){
+					System.out.format(">> ERROR can't initialize field with newExp\n");	
+					fileWriter.write("ERROR(" + lineNumber + ")");
+					fileWriter.close();
+					System.exit(0);
+				}
+				if(!(exp instanceof AST_EXP_INT) && !(exp instanceof AST_EXP_STRING) && !(exp instanceof AST_EXP_NIL)){
+					System.out.format(">> ERROR can't initialize field with complex exp\n");
+					fileWriter.write("ERROR(" + lineNumber + ")");
+					fileWriter.close();
+					System.exit(0);
+				}
+			}
 		}
 		
 			

@@ -84,7 +84,12 @@ public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 			fileWriter.close();
 			System.exit(0);
 		}
-		
+		if(!t.isClass() && !t.isArray() && type.type != "int" && type.type != "string"){
+			System.out.format(">> ERROR array def with non existing type %s\n",type.type);
+			fileWriter.write("ERROR(" + lineNumber + ")");
+			fileWriter.close();
+			System.exit(0);
+		}
 		/**************************************/
 		/* [2] Check That Name does NOT exist */
 		/**************************************/

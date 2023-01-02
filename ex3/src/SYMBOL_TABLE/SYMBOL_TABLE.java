@@ -374,5 +374,23 @@ public class SYMBOL_TABLE
 		
 		return null;
 	}
+	public boolean isClassScope(){
+		SYMBOL_TABLE_ENTRY e = top;
+		TYPE_FOR_SCOPE_BOUNDARIES sb = null;
+				
+		while (e!=null )
+		{
+			while(e!=null && e.name != "SCOPE-BOUNDARY"){
+				e = e.prevtop;	
+			}
+			if (e!=null){
+				sb = (TYPE_FOR_SCOPE_BOUNDARIES)e.type;
+				if (sb.name!="NONE") return true;
+				return false;
+			}
+		}
+		
+		return false;
+	}
 	
 }

@@ -53,7 +53,15 @@ public class AST_STMT_RETURN extends AST_STMT
 			System.exit(0);
 		}
 		
-		if (expectedReturnType==TYPE_VOID.getInstance() && t == null) return null;
+		if (expectedReturnType==TYPE_VOID.getInstance()){
+			if( t != null){
+				System.out.format(">> ERROR function is of type void and return stmt isn't null");
+				fileWriter.write("ERROR(" + lineNumber + ")");
+				fileWriter.close();			
+				System.exit(0);
+			}
+			return null;
+		}
 		
 		if(expectedReturnType != t){
 			System.out.format(">> ERROR expectedReturnType is %s and return stmt's type is %s", expectedReturnType, t);	
