@@ -1,0 +1,211 @@
+/*************/
+/* IMPORT(S) */
+/*************/
+import java_cup.runtime.*;
+import java.io.PrintWriter;
+import AST.*;
+
+parser code 
+{:
+	public Lexer lexer;
+	private PrintWriter fileWriter;
+	public Parser(Lexer lexer, PrintWriter fileWriter)
+	{
+		super(lexer);
+		this.lexer = lexer;
+		this.fileWriter = fileWriter;
+	}
+	public void report_error(String message, Object info)
+	{		
+		fileWriter.print("ERROR(");		
+		fileWriter.print(lexer.getLine());		
+		fileWriter.print(")");
+		fileWriter.close();
+		System.exit(0);
+	}
+:}
+
+/************************/
+/* CUSTOMIZE CUP PARSER */
+/************************/
+scan with
+{:
+	Symbol s;
+	s = lexer.next_token();	
+	if(TokenNames.terminalNames[s.sym] == "ERROR"){
+		fileWriter.print("ERROR");
+		fileWriter.close();
+		System.exit(0);
+	}
+	return s; 
+:};
+
+/*************/
+/* TERMINALS */
+/*************/
+terminal IF;
+terminal EQ;
+terminal DOT;
+terminal PLUS;
+terminal MINUS;
+terminal TIMES;
+terminal WHILE;
+terminal DIVIDE;
+terminal LPAREN;
+terminal RPAREN;
+terminal LBRACK;
+terminal RBRACK;
+terminal LBRACE;
+terminal RBRACE;
+terminal SEMICOLON;
+terminal ASSIGN;
+terminal TYPE_INT;
+terminal TYPE_STRING;
+terminal TYPE_VOID;
+terminal ARRAY;
+terminal COMMA;
+terminal NIL;
+terminal RETURN;
+terminal NEW;
+terminal LT;
+terminal GT;
+terminal CLASS;
+terminal EXTENDS;
+terminal ERROR;
+
+/*************/
+/* TERMINALS */
+/*************/
+terminal Integer INT;
+terminal String ID;
+terminal String STRING;
+
+/*****************/
+/* NON TERMINALS */
+/*****************/
+non terminal AST_EXP exp;
+non terminal AST_VAR var;
+non terminal AST_STMT stmt;
+non terminal AST_STMT_LIST stmtList;
+non terminal AST_DEC dec;
+non terminal AST_NEW_EXP newExp;
+non terminal AST_TYPE type;
+non terminal AST_DEC_ARRAY arrayTypedef;
+non terminal AST_DEC_CLASS classDec;
+non terminal AST_DEC_VAR varDec;
+non terminal AST_ARG arg;
+non terminal AST_DEC_FUNC funcDec;
+non terminal AST_CFIELD cField;
+non terminal AST_DEC_LIST decList;
+non terminal AST_EXP_LIST expList;
+non terminal AST_ARGS_LIST argsList;
+non terminal AST_CFIELD_LIST cFieldList;
+non terminal AST_PROGRAM Program;
+
+/***********************/
+/* OPERATOR PRECEDENCE */
+/***********************/
+precedence left ASSIGN;
+precedence left EQ;
+precedence left LT, GT;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left LBRACK;
+precedence left LPAREN;
+precedence left DOT;
+
+/************************/
+/* START WITH: Program */
+/************************/
+start with Program;
+
+/********************/
+/* DERIVATION RULES */
+/********************/
+
+stmtList	::=		stmt:s	stmtList:l		{: RESULT = new AST_STMT_LIST(s,l);    :}
+					| stmt:s				{: RESULT = new AST_STMT_LIST(s,null); :}
+					;
+
+decList		::=		dec:d	decList:dl		{: RESULT = new AST_DEC_LIST(d,dl);    :}
+					| dec:d					{: RESULT = new AST_DEC_LIST(d,null); :}
+					;
+
+expList		::=		exp:e COMMA	expList:el		{: RESULT = new AST_EXP_LIST(e,el);    :}
+					| exp:e					{: RESULT = new AST_EXP_LIST(e,null); :}
+					;
+argsList	::=		arg:a COMMA	argsList:al		{: RESULT = new AST_ARGS_LIST(a,al);    :}
+					| arg:a						{: RESULT = new AST_ARGS_LIST(a,null); :}
+					;
+cFieldList	::=		cField:cf cFieldList:cfl		{: RESULT = new AST_CFIELD_LIST(cf,cfl);    :}
+					| cField:cf							{: RESULT = new AST_CFIELD_LIST(cf,null); :}
+					;
+type		::=		TYPE_INT						{: RESULT = new AST_TYPE("int",0, fileWriter);      :}
+					| TYPE_STRING					{: RESULT = new AST_TYPE("string",0, fileWriter);      :}
+					| TYPE_VOID						{: RESULT = new AST_TYPE("void",0, fileWriter);      :}
+					| ID:t							{: RESULT = new AST_TYPE(t,tleft+1, fileWriter);      :}
+					;	
+arg			::=		type:t ID:name			{: RESULT = new AST_ARG(t, name, tleft, fileWriter);       :}
+					;
+
+var			::=		ID:name								{: RESULT = new AST_VAR_SIMPLE(name, nameleft+1, fileWriter);       :}
+					| var:v DOT ID:fieldName			{: RESULT = new AST_VAR_FIELD(v,fieldName,vleft+1, fileWriter); :} 
+					| var:v LBRACK exp:e RBRACK			{: RESULT = new AST_VAR_SUBSCRIPT(v,e,vleft+1, fileWriter);     :} 
+					;
+					
+stmt		::=		var:v ASSIGN exp:e SEMICOLON								{: RESULT = new AST_STMT_ASSIGN(v,e,vleft+1, fileWriter); :}
+					| IF    LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_IF(cond,body, condleft+1, fileWriter); :}
+					| WHILE LPAREN exp:cond RPAREN LBRACE stmtList:body RBRACE	{: RESULT = new AST_STMT_WHILE(cond,body, condleft+1, fileWriter); :}
+					| var:v ASSIGN newExp:ne SEMICOLON							{: RESULT = new AST_STMT_ASSIGN_NEW(v,ne,vleft+1, fileWriter); :}
+					| RETURN:r SEMICOLON											{: RESULT = new AST_STMT_RETURN(null,rleft+1, fileWriter); :}
+					| RETURN exp:e SEMICOLON									{: RESULT = new AST_STMT_RETURN(e, eleft+1, fileWriter); :}
+					| ID:fieldName LPAREN expList:l RPAREN SEMICOLON			{: RESULT = new AST_STMT_SUBSCRIPT(null,fieldName,l,fieldNameleft+1, fileWriter); :}
+					| var:v DOT ID:fieldName LPAREN expList:l RPAREN SEMICOLON	{: RESULT = new AST_STMT_SUBSCRIPT(v,fieldName,l,fieldNameleft+1, fileWriter); :}
+					| var:v DOT ID:fieldName LPAREN RPAREN SEMICOLON	{: RESULT = new AST_STMT_SUBSCRIPT(v,fieldName,null,fieldNameleft+1, fileWriter); :}
+					| varDec:vd 												{: RESULT = new AST_STMT_VAR_DEC(vd); :}
+					;
+
+exp			::=		INT:i								{: RESULT = new AST_EXP_INT(i);          :}
+					| var:v								{: RESULT = new AST_EXP_VAR(v);          :}
+					| exp:e1 PLUS  exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 0, e1left+1, fileWriter);:}
+					| exp:e1 MINUS exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 1, e1left+1, fileWriter);:}
+					| exp:e1 TIMES exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 2, e1left+1, fileWriter);:}
+					| exp:e1 DIVIDE exp:e2				{: RESULT = new AST_EXP_BINOP(e1, e2, 3, e1left+1, fileWriter);:}
+					| exp:e1 LT exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 4, e1left+1, fileWriter);:}
+					| exp:e1 GT exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 5, e1left+1, fileWriter);:}
+					| exp:e1 EQ exp:e2					{: RESULT = new AST_EXP_BINOP(e1, e2, 6, e1left+1, fileWriter);:}
+					| LPAREN exp:e RPAREN				{: RESULT = new AST_EXP_PAREN(e);:}
+					| var:v DOT ID:fieldName LPAREN expList:l RPAREN	{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,l,vleft+1, fileWriter);:}
+					| ID:fieldName LPAREN expList:l RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,l,fieldNameleft+1, fileWriter);:}
+					| ID:fieldName LPAREN RPAREN						{: RESULT = new AST_EXP_SUBSCRIPT(null,fieldName,null,fieldNameleft+1, fileWriter);:}
+					| var:v DOT ID:fieldName LPAREN RPAREN				{: RESULT = new AST_EXP_SUBSCRIPT(v,fieldName,null,vleft+1, fileWriter);:}
+					| MINUS INT:i							{: RESULT = new AST_EXP_INT(-1*i);         :}
+					| STRING:s							{: RESULT = new AST_EXP_STRING(s);      :}
+					| NIL								{: RESULT = new AST_EXP_NIL();          :}
+					;
+dec			::=		varDec:v								{: RESULT = new AST_DEC(v);          :}
+					| funcDec:f								{: RESULT = new AST_DEC(f);         :}
+					| classDec:c							{: RESULT = new AST_DEC(c); :}
+					| arrayTypedef:a						{: RESULT = new AST_DEC(a); :}
+					;
+Program		::=		decList:dl								{: RESULT = new AST_PROGRAM(dl);      :}
+					;
+newExp		::=		NEW type:t								{: RESULT = new AST_NEW_EXP_SIMPLE(t,tleft+1, fileWriter);      :}
+					| NEW type:t LBRACK	exp:e RBRACK		{: RESULT = new AST_NEW_EXP_SUBSCRIPT(t,e,tleft+1, fileWriter); :}					
+					;					
+arrayTypedef::=		ARRAY ID:name EQ type:t LBRACK RBRACK SEMICOLON		{: RESULT = new AST_DEC_ARRAY(name,t, tleft+1, fileWriter);      :}								
+					;					
+classDec	::=		CLASS ID:name LBRACE cFieldList:l RBRACE 	{: RESULT = new AST_DEC_CLASS(name,null,l, nameleft+1, fileWriter);      :}
+					| CLASS ID:name EXTENDS ID:fatherName LBRACE cFieldList:l RBRACE 	{: RESULT = new AST_DEC_CLASS(name,fatherName,l,nameleft+1, fileWriter);      :}					
+					;					
+varDec		::=		type:t ID:name SEMICOLON				{: RESULT = new AST_DEC_VAR(name,t,null,null, tleft+1, fileWriter);      :}
+					| type:t ID:name ASSIGN exp:e SEMICOLON	{: RESULT = new AST_DEC_VAR(name,t,e,null, tleft+1, fileWriter);      :}
+					| type:t ID:name ASSIGN newExp:ne SEMICOLON	{: RESULT = new AST_DEC_VAR(name,t,null,ne, tleft+1, fileWriter);      :}
+					;					
+funcDec		::=		type:t ID:name LPAREN RPAREN LBRACE stmtList:l RBRACE		{: RESULT = new AST_DEC_FUNC(name,t,null,l, tleft+1, fileWriter);      :}
+					| type:t ID:name LPAREN argsList:args RPAREN LBRACE stmtList:l RBRACE		{: RESULT = new AST_DEC_FUNC(name,t,args,l, tleft+1, fileWriter);      :}
+					;
+cField		::=		varDec:vd						{: RESULT = new AST_CFIELD_VAR(vd);      :}
+					| funcDec:fd					{: RESULT = new AST_CFIELD_FUNC(fd);      :}
+					;
+				
