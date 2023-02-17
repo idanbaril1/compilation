@@ -168,11 +168,20 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 		}		
 		return functionFieldType.returnType;		
 	}
+	
 	public TEMP IRme()
 	{
 		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
-		TEMP_LIST argsTemps = expList.IRme();
-		
+		TEMP_LIST argsTemps = null;
+		if (expList != null) argsTemps = expList.IRmeList();
+		if(fieldName == "PrintInt"){
+			IR.getInstance().Add_IRcommand(new IRcommand_PrintInt(argsTemps.head));
+			return t;
+		}
+		if(fieldName == "PrintString"){
+			IR.getInstance().Add_IRcommand(new IRcommand_PrintString(argsTemps.head));
+			return t;
+		}
 		IR.getInstance().Add_IRcommand(new IRcommand_Call(t,fieldName, argsTemps));
 		return t;
 	}

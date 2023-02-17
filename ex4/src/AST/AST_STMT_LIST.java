@@ -79,10 +79,12 @@ public class AST_STMT_LIST extends AST_Node
 		/*********************************************************/
 		return new TYPE_LIST(t1, t2);		
 	}
-	public TEMP IRme()
+	public TEMP IRme(String funcName)
 	{
-		if (head != null) head.IRme();
-		if (tail != null) tail.IRme();
+		if (head != null){ 						
+			head.IRme(funcName);					
+		}
+		if (tail != null) tail.IRme(funcName);
 		
 		return null;
 	}

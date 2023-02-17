@@ -97,19 +97,22 @@ public class AST_STMT_ASSIGN extends AST_STMT
 		}
 		return null;
 	}
-	public TEMP IRme()
+	public TEMP IRme(String funcName)
 	{
-		TEMP src = exp.IRme();
+		TEMP src;
 		if(var instanceof AST_VAR_SIMPLE){
+			src = exp.IRme();
 			IR.getInstance().Add_IRcommand(new IRcommand_Store(((AST_VAR_SIMPLE) var).name,src));
 		}
 		if(var instanceof AST_VAR_FIELD){
 			TEMP obj = ((AST_VAR_FIELD) var).var.IRme();
+			src = exp.IRme();
 			IR.getInstance().Add_IRcommand(new IRcommand_FieldSet(obj, ((AST_VAR_FIELD) var).fieldName, src));
 		}
 		if(var instanceof AST_VAR_SUBSCRIPT){
 			TEMP arr = ((AST_VAR_SUBSCRIPT) var).var.IRme();
 			TEMP index = ((AST_VAR_SUBSCRIPT) var).subscript.IRme();
+			src = exp.IRme();
 			IR.getInstance().Add_IRcommand(new IRcommand_ArraySet(arr, index , src));
 		}
 		

@@ -168,11 +168,19 @@ public class AST_STMT_SUBSCRIPT extends AST_STMT
 		
 		return functionFieldType.returnType;		
 	}
-	public TEMP IRme()
+	public TEMP IRme(String funcName)
 	{
-		TEMP_LIST argsTemps = expList.IRme();
-		
-		IR.getInstance().Add_IRcommand(new IRcommand_Call(null, fieldName, argsTemps));
+		TEMP_LIST argsTemps = expList.IRmeList();
+		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
+		if(id.equals("PrintInt")){
+			IR.getInstance().Add_IRcommand(new IRcommand_PrintInt(argsTemps.head));
+			return t;
+		}
+		if(id.equals("PrintString")){
+			IR.getInstance().Add_IRcommand(new IRcommand_PrintString(argsTemps.head));
+			return t;
+		}
+		IR.getInstance().Add_IRcommand(new IRcommand_Call(t, id, argsTemps));
 		return null;
 	}
 }

@@ -1,8 +1,10 @@
 package AST;
 
 import TYPES.*;
-import SYMBOL_TABLE.*;
 import java.io.PrintWriter;
+import IR.*;
+import TEMP.*;
+import MIPS.*;
 
 public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 {

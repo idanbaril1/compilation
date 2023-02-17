@@ -64,7 +64,7 @@ public class AST_STMT_VAR_DEC extends AST_STMT
 		if (vd != null) t = vd.SemantMe(null);
 		return t;
 	}
-	public TEMP IRme()
+	public TEMP IRme(String funcName)
 	{
 		if (vd != null) return vd.IRme();
 		

@@ -84,7 +84,7 @@ public class AST_STMT_IF extends AST_STMT
 		/*********************************************************/
 		return null;		
 	}
-	public TEMP IRme()
+	public TEMP IRme(String funcName)
 	{
 		/*******************************/
 		/* [1] Allocate fresh label */
@@ -104,7 +104,7 @@ public class AST_STMT_IF extends AST_STMT
 		/*******************/
 		/* [5] body.IRme() */
 		/*******************/
-		body.IRme();
+		body.IRme(funcName);
 
 		/**********************/
 		/* [7] end label */

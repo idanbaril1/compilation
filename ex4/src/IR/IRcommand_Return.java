@@ -16,10 +16,12 @@ import MIPS.*;
 public class IRcommand_Return extends IRcommand
 {
 	TEMP value;
+	String funcName;
 	
-	public IRcommand_Return(TEMP value)
+	public IRcommand_Return(TEMP value, String funcName)
 	{
 		this.value = value;
+		this.funcName = funcName;
 	}
 	
 	/***************/
@@ -27,6 +29,13 @@ public class IRcommand_Return extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		//missing
+		String epilogueLabel = funcName + "_epilogue";
+		MIPSGenerator.getInstance().loadReturnReg(value);
+		if(!funcName.equals("main")){
+			MIPSGenerator.getInstance().jump(epilogueLabel);
+		}
+		else{
+			MIPSGenerator.getInstance().jump("program_end");
+		}
 	}
 }

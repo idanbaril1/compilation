@@ -13,14 +13,15 @@ package IR;
 import TEMP.*;
 import MIPS.*;
 
-public class IRcommand_Allocate extends IRcommand
+public class IRcommandConstString extends IRcommand
 {
-	String var_name;
+	TEMP t;
+	String name;
 	String value;
 	
-	public IRcommand_Allocate(String var_name, String value)
+	public IRcommandConstString(String name,String value)
 	{
-		this.var_name = var_name;
+		this.name = name;
 		this.value = value;
 	}
 	
@@ -29,6 +30,6 @@ public class IRcommand_Allocate extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		MIPSGenerator.getInstance().allocate(var_name, value);
+		MIPSGenerator.getInstance().loadString(name,value);
 	}
 }

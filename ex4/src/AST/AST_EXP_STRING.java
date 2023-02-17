@@ -1,6 +1,8 @@
 package AST;
 
 import TYPES.*;
+import TEMP.*;
+import IR.*;
 
 public class AST_EXP_STRING extends AST_EXP
 {
@@ -47,5 +49,18 @@ public class AST_EXP_STRING extends AST_EXP
 	public TYPE SemantMe()
 	{
 		return TYPE_STRING.getInstance();
+	}
+	public TEMP IRme()
+	{	
+		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
+		String constName = IRcommand.getFreshLabel("string_const");
+		IR.getInstance().Add_IRcommand(new IRcommandConstString(constName, value));
+		IR.getInstance().Add_IRcommand(new IRcommand_Load_String(t, constName));
+		return t;
+	}
+	public String getStringConst(){
+		String name = IRcommand.getFreshLabel("str");
+		IR.getInstance().Add_IRcommand(new IRcommandConstString(name,value));
+		return name;
 	}
 }

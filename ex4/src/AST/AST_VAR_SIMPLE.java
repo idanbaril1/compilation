@@ -66,12 +66,12 @@ public class AST_VAR_SIMPLE extends AST_VAR
 				TYPE_CLASS scopeClass = (TYPE_CLASS)SYMBOL_TABLE.getInstance().find(className);
 				t = scopeClass.findFieldInClass(name);
 			}
-			if (t == null){
-				t = SYMBOL_TABLE.getInstance().find(name);
+			if (t == null){			
+				t = SYMBOL_TABLE.getInstance().find(name);				
 			}			
 			if (t == null)
 			{
-				System.out.format(">> ERROR %s doesn't exist\n", name);
+				System.out.format(">> ERROR %d %s doesn't exist\n", lineNumber, name);
 				fileWriter.write("ERROR(" + lineNumber + ")");
 				fileWriter.close();
 

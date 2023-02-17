@@ -1,7 +1,9 @@
 package AST;
 
 import TYPES.*;
+import IR.*;
 import TEMP.*;
+import MIPS.*;
 
 public class AST_PROGRAM extends AST_Node
 {

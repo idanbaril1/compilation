@@ -74,14 +74,14 @@ public class AST_STMT_RETURN extends AST_STMT
 		
 		return null;		
 	}
-	public TEMP IRme()
+	public TEMP IRme(String funcName)
 	{
 		TEMP t = null;
 		if(exp != null){
 			t = exp.IRme();
 		}
-		IR.getInstance().Add_IRcommand(new IRcommand_Return(t));
-		IR.getInstance().Add_IRcommand(new IRcommand_JumpRA());
+		IR.getInstance().Add_IRcommand(new IRcommand_Return(t, funcName));
+
 		return null;
 	}
 }

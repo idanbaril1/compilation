@@ -188,16 +188,33 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		return null;		
 	}
 	public TEMP IRme()
-	{
-		IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name));
-		
-		if (exp != null)
-		{
-			IR.getInstance().Add_IRcommand(new IRcommand_Store(name,exp.IRme()));
+	{	
+		if(type.type.equals("int")){
+			IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name, "721"));		
+			if (exp != null)
+			{
+				IR.getInstance().Add_IRcommand(new IRcommand_Store(name,exp.IRme()));
+			}
+			
 		}
-		if (newExp != null){
+		else if(type.type.equals("string")){
+					
+			if (exp != null)
+			{
+				String constName = ((AST_EXP_STRING)exp).getStringConst();
+				IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name, constName));
+			}
+			
+		}
+		else if (newExp != null){
+			IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name, "721"));
 			IR.getInstance().Add_IRcommand(new IRcommand_Store(name,newExp.IRme()));
 		}
+		else{
+			IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name, "721"));
+		}
+		
+		
 		return null;
 	}
 }

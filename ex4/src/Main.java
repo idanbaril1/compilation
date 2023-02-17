@@ -3,6 +3,11 @@ import java.io.*;
 import java.io.PrintWriter;
 import java_cup.runtime.Symbol;
 import AST.*;
+import TYPES.*;
+import SYMBOL_TABLE.*;
+import IR.*;
+import TEMP.*;
+import MIPS.*;
 
 public class Main
 {

@@ -188,15 +188,18 @@ public class AST_DEC_FUNC extends AST_DEC_ABSTRACT
 	}
 	public TEMP IRme()
 	{
-		AST_ARGS_LIST tempArgs = args;
-		/* Load args */
-		for(int i=0; tempArgs != null; i++){
-			IR.getInstance().Add_IRcommand(new IRcommand_LoadArg(tempArgs.head.name, i));
-			tempArgs = tempArgs.tail;
+		if(name.equals("main")){
+			IR.getInstance().Add_IRcommand(new IRcommand_Label(name));
+			if (content != null) content.IRme(name);
+			return null;
 		}
-		IR.getInstance().Add_IRcommand(new IRcommand_Label(name));		
-		if (content != null) content.IRme();
-		IR.getInstance().Add_IRcommand(new IRcommand_JumpRA());
+		String afterFunc = "after_" + name;	
+		IR.getInstance().Add_IRcommand(new IRcommand_Jump_Label(afterFunc));				
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(name));
+		IR.getInstance().Add_IRcommand(new IRcommand_Prologue(name, args));
+		if (content != null) content.IRme(name);
+		IR.getInstance().Add_IRcommand(new IRcommand_Epilogue(name, args));
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(afterFunc));
 		return null;
 	}
 }

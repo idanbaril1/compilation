@@ -15,10 +15,9 @@ import MIPS.*;
 
 public class IRcommand_ArrayAccess extends IRcommand
 {
-	TEMP arrBase;
 	TEMP index;
 	TEMP result;
-	
+	TEMP arrBase;
 	public IRcommand_ArrayAccess(TEMP result, TEMP arrBase, TEMP index)
 	{
 		this.result = result;
@@ -29,8 +28,7 @@ public class IRcommand_ArrayAccess extends IRcommand
 	/***************/
 	/* MIPS me !!! */
 	/***************/
-	public void MIPSme()
-	{
-		//missing
+	public void MIPSme(){
+		MIPSGenerator.getInstance().arrayAccess(result, arrBase, index);
 	}
 }

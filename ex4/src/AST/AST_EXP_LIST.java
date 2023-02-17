@@ -79,15 +79,15 @@ public class AST_EXP_LIST extends AST_Node
 		/*********************************************************/
 		return new TYPE_LIST(t1, t2);		
 	}	
-	public TEMP_LIST IRme()
+	public TEMP_LIST IRmeList()
 	{
-		TEMP t1;
-		TEMP_LIST t2;
+		TEMP t1 = null;
+		TEMP_LIST t2 = null;
 		if (head != null){
 			t1 = head.IRme();
 		}
 		if (tail != null){
-			t2 = tail.IRme();
+			t2 = tail.IRmeList();
 		}
 		
 		return new TEMP_LIST(t1, t2);

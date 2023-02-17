@@ -15,15 +15,17 @@ import MIPS.*;
 
 public class IRcommand_ArraySet extends IRcommand
 {
-	TEMP index;
+	TEMP place;
 	TEMP value;
 	TEMP arrBase;
 	
-	public IRcommand_ArraySet(TEMP arrBase, TEMP index, TEMP value)
+	public IRcommand_ArraySet(TEMP arrBase, TEMP place, TEMP value)
 	{
+
+
 		this.value = value;
 		this.arrBase = arrBase;
-		this.index = index;
+		this.place = place;
 	}
 	
 	/***************/
@@ -31,6 +33,13 @@ public class IRcommand_ArraySet extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		//missing
+		int valIdx = value.getSerialNumber() % 10;
+		int placeIdx = place.getSerialNumber() % 10;
+		int baseIdx = arrBase.getSerialNumber() % 10;
+		MIPSGenerator.getInstance().move("$s0", String.format("$t%d", placeIdx));
+		MIPSGenerator.getInstance().addi("$s0", "$s0", 1);
+		MIPSGenerator.getInstance().muli("$s0", "$s0", 4);
+		MIPSGenerator.getInstance().add("$s0", String.format("$t%d", baseIdx), "$s0");
+		MIPSGenerator.getInstance().store(String.format("$t%d", valIdx), 0, "$s0");
 	}
 }

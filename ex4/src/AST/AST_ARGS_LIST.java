@@ -79,12 +79,6 @@ public class AST_ARGS_LIST extends AST_Node
 		/*********************************************************/
 		return new TYPE_LIST(t1, t2);		
 	}	
-	public TEMP IRme()
-	{
-		if (head != null) head.IRme();
-		if (tail != null) tail.IRme();
-		
-		return null;
-	}
+	
 	
 }

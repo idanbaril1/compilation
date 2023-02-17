@@ -83,7 +83,7 @@ public class AST_STMT_WHILE extends AST_STMT
 		/*********************************************************/
 		return null;		
 	}	
-	public TEMP IRme()
+	public TEMP IRme(String funcName)
 	{
 		/*******************************/
 		/* [1] Allocate 2 fresh labels */
@@ -113,7 +113,7 @@ public class AST_STMT_WHILE extends AST_STMT
 		/*******************/
 		/* [5] body.IRme() */
 		/*******************/
-		body.IRme();
+		body.IRme(funcName);
 
 		/******************************/
 		/* [6] Jump to the loop entry */

@@ -103,7 +103,7 @@ public class AST_VAR_FIELD extends AST_VAR
 	{
 		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
 		TEMP varTemp = var.IRme();
-		IR.getInstance().Add_IRcommand(new IRcommand_Load(t, varTemp, fieldName));
+		//IR.getInstance().Add_IRcommand(new IRcommand_Load(t, varTemp, fieldName));
 		return t;
 	}
 }
