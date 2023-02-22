@@ -36,6 +36,10 @@ public class IRcommand_ArraySet extends IRcommand
 		int valIdx = value.getSerialNumber() % 10;
 		int placeIdx = place.getSerialNumber() % 10;
 		int baseIdx = arrBase.getSerialNumber() % 10;
+		MIPSGenerator.getInstance().bltz(String.format("$t%d", placeIdx%10), "arrayAccessError_label");
+		MIPSGenerator.getInstance().lw("$s0", String.format("$t%d",baseIdx%10), 0);
+		MIPSGenerator.getInstance().bge(String.format("$t%d", placeIdx%10), "$s0", "arrayAccessError_label");
+
 		MIPSGenerator.getInstance().move("$s0", String.format("$t%d", placeIdx));
 		MIPSGenerator.getInstance().addi("$s0", "$s0", 1);
 		MIPSGenerator.getInstance().muli("$s0", "$s0", 4);

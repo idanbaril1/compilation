@@ -25,10 +25,11 @@ public class MIPSGenerator
 	/* The file writer ... */
 	/***********************/
 	public void finalizeFile()
-	{
+	{	
 		fileWriter.format("program_end:\n");
 		fileWriter.print("\tli $v0,10\n");
 		fileWriter.print("\tsyscall\n");
+		arrayAccessError();
 		fileWriter.close();
 	}
 	public void print_int(TEMP t)
@@ -46,6 +47,15 @@ public class MIPSGenerator
 		int idx=stringAddress.getSerialNumber();
 		fileWriter.format("\tmove $a0,$t%d\n",idx%10);
 		fileWriter.format("\tli $v0,4\n");
+		fileWriter.format("\tsyscall\n");
+	}
+	public void print_string(String stringReg){		
+		fileWriter.format("\tmove $a0,%s\n",stringReg);
+		fileWriter.format("\tli $v0,4\n");
+		fileWriter.format("\tsyscall\n");
+	}
+	public void exit(){
+		fileWriter.format("\tli $v0,10\n");
 		fileWriter.format("\tsyscall\n");
 	}
 	//public TEMP addressLocalVar(int serialLocalVarNum)
@@ -92,6 +102,9 @@ public class MIPSGenerator
 		int idxdst=dst.getSerialNumber();
 		int idxbase=base.getSerialNumber();
 		fileWriter.format("\tlw $t%d,%d($t%d)\n",idxdst%10,offset,idxbase%10);	
+	}
+	public void lw(String dst, String base, int offset){		
+		fileWriter.format("\tlw %s,%d(%s)\n", dst, offset, base);	
 	}
 	public void li(TEMP t,int value)
 	{
@@ -237,6 +250,10 @@ public class MIPSGenerator
 		
 		fileWriter.format("\tbge $t%d,$t%d,%s\n",i1%10,i2%10,label);				
 	}
+	public void bge(String oprnd1,String oprnd2,String label)
+	{
+		fileWriter.format("\tbge %s,%s,%s\n",oprnd1, oprnd2, label);				
+	}
 	public void bne(TEMP oprnd1,TEMP oprnd2,String label)
 	{
 		int i1 =oprnd1.getSerialNumber();
@@ -332,15 +349,21 @@ public class MIPSGenerator
 		int resIdx = result.getSerialNumber();
 		int baseIdx = arrBase.getSerialNumber();
 		int placeIdx = place.getSerialNumber();
-		fileWriter.format("bltz $t%d, program_end\n", placeIdx%10);
-		fileWriter.format("lw $s0, 0($t%d)\n", baseIdx%10);
-		fileWriter.format("bge $t%d, $s0, program_end\n", placeIdx%10);
+		fileWriter.format("\tbltz $t%d, arrayAccessError_label\n", placeIdx%10);
+		fileWriter.format("\tlw $s0, 0($t%d)\n", baseIdx%10);
+		fileWriter.format("\tbge $t%d, $s0, arrayAccessError_label\n", placeIdx%10);
 
-		fileWriter.format("move $s0, $t%d\n", placeIdx%10);
-		fileWriter.format("add $s0, $s0, 1\n");
-		fileWriter.format("mul $s0, $s0, 4\n");
-		fileWriter.format("addu $s0, $t%d, $s0\n", baseIdx%10);
-		fileWriter.format("lw $t%d, 0($s0)\n", resIdx%10);
+		fileWriter.format("\tmove $s0, $t%d\n", placeIdx%10);
+		fileWriter.format("\tadd $s0, $s0, 1\n");
+		fileWriter.format("\tmul $s0, $s0, 4\n");
+		fileWriter.format("\taddu $s0, $t%d, $s0\n", baseIdx%10);
+		fileWriter.format("\tlw $t%d, 0($s0)\n", resIdx%10);
+	}
+	public void arrayAccessError(){
+		label("arrayAccessError_label");
+		la("$s0", "string_access_violation");
+		print_string("$s0");
+		jump("program_end");
 	}
 	/**************************************/
 	/* USUAL SINGLETON IMPLEMENTATION ... */
