@@ -79,10 +79,10 @@ public class AST_CFIELD_LIST extends AST_Node
 		/*********************************************************/
 		return new TYPE_LIST(t1, t2);		
 	}	
-	public TEMP IRme()
+	public TEMP IRme(TYPE_CLASS classType)
 	{
-		if (head != null) head.IRme();
-		if (tail != null) tail.IRme();
+		if (head != null) head.IRme(classType);
+		if (tail != null) tail.IRme(classType);
 		
 		return null;
 	}

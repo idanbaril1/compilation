@@ -30,6 +30,7 @@ public class MIPSGenerator
 		fileWriter.print("\tli $v0,10\n");
 		fileWriter.print("\tsyscall\n");
 		arrayAccessError();
+		invalidPointerError();
 		fileWriter.close();
 	}
 	public void print_int(TEMP t)
@@ -84,10 +85,18 @@ public class MIPSGenerator
 		int idxdst=dst.getSerialNumber();
 		fileWriter.format("\tlw $t%d, global_%s\n",idxdst%10,var_name);
 	}
+	public void loadFromVar(String dst,String var_name)
+	{
+		fileWriter.format("\tlw %s, global_%s\n",dst,var_name);
+	}
 	public void store(String var_name,TEMP src)
 	{
 		int idxsrc=src.getSerialNumber();
 		fileWriter.format("\tsw $t%d,global_%s\n",idxsrc%10,var_name);		
+	}
+	public void storeInVar(String var_name,String src)
+	{
+		fileWriter.format("\tsw %s,global_%s\n",src,var_name);		
 	}
 	public void store(String src,int index, String base)
 	{
@@ -302,7 +311,9 @@ public class MIPSGenerator
 	{
 		fileWriter.format("\tblti %s,%d,%s\n",oprnd1,imm,label);
 	}
-
+	public void jr(String reg){
+		fileWriter.format("\tjr %s\n", reg);
+	}
 	public void funcStart(){
 		fileWriter.format("\tsubu $sp, $sp,4\n");
 		fileWriter.format("\tsw $ra, 0($sp)\n");
@@ -322,6 +333,18 @@ public class MIPSGenerator
 		fileWriter.format("\taddu $sp, $sp, 4\n");
 		fileWriter.format("\tsw $t0, global_%s\n", argName);
 	}
+	public void backupFieldName(String fieldName){
+		/* Store value of fieldName in a temp to not override a var from outer scope */
+		loadFromVar("$a1",fieldName);
+		String tempName = fieldName + "_temp";
+		allocate(tempName, "721");
+		storeInVar(tempName, "$a1");		
+	}
+	public void retrieveFieldName(String fieldName){
+		/* Retrieve value of fieldName from temp*/
+		loadFromVar("$s1",fieldName + "_temp");
+		storeInVar(fieldName, "$s1");		
+	}
 	public void restoreArg(String argName){
 		String tempName = argName + "_temp";
 		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
@@ -333,12 +356,20 @@ public class MIPSGenerator
 		fileWriter.format("\tlw $fp, 0($sp)\n");
 		fileWriter.format("\tlw $ra, 4($sp)\n");
 		fileWriter.format("\taddu $sp, $sp, 8\n");
+		for(int i=9; i>=0; i--){
+			fileWriter.format("\tlw $t%d, 0($sp)\n", i);
+			fileWriter.format("\taddu $sp, $sp, 4\n");
+		}
 		fileWriter.format("\tjr $ra\n");
 	}
 	public void storeArg(TEMP value){
 		int index = value.getSerialNumber();
 		fileWriter.format("\tsubu $sp, $sp, 4\n");
 		fileWriter.format("\tsw $t%d, 0($sp)\n", index%10);
+	}
+	public void storeReg(String reg){
+		fileWriter.format("\tsubu $sp, $sp, 4\n");
+		fileWriter.format("\tsw %s, 0($sp)\n", reg);
 	}
 	public void loadString(String name, String value){
 		fileWriter.format(".data\n");
@@ -362,6 +393,12 @@ public class MIPSGenerator
 	public void arrayAccessError(){
 		label("arrayAccessError_label");
 		la("$s0", "string_access_violation");
+		print_string("$s0");
+		jump("program_end");
+	}
+	public void invalidPointerError(){
+		label("invalid_pointer_label");
+		la("$s0", "string_invalid_ptr_dref");
 		print_string("$s0");
 		jump("program_end");
 	}

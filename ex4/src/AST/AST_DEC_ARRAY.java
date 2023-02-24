@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import IR.*;
 import TEMP.*;
 import MIPS.*;
+import SYMBOL_TABLE.*;
 
 public class AST_DEC_ARRAY extends AST_DEC_ABSTRACT
 {

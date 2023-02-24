@@ -67,9 +67,12 @@ public class AST_CFIELD_FUNC extends AST_CFIELD
 		/*********************************************************/
 		return t;		
 	}	
-	public TEMP IRme()
+	public TEMP IRme(TYPE_CLASS classType)
 	{
-		if (fd != null) return fd.IRme();
+		if (fd != null){ 
+			fd.name = classType.name + "_class_" + fd.name;
+			return fd.IRme();
+		}
 		
 		return null;
 	}

@@ -13,6 +13,7 @@ public class AST_EXP_BINOP extends AST_EXP
 	public PrintWriter fileWriter;
 	public int lineNumber;
 	public boolean areStrings = false;
+	public boolean nilComp = false;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -95,7 +96,7 @@ public class AST_EXP_BINOP extends AST_EXP
 			if(t1 == t2){
 				if(t1 == TYPE_STRING.getInstance()){
 					areStrings = true;
-				}
+				}				
 				return TYPE_INT.getInstance();
 			}
 			if(t1.isClass() && t2.isClass()){
@@ -111,6 +112,7 @@ public class AST_EXP_BINOP extends AST_EXP
 				return null;
 			}
 			if((t1.isClass() || t1.isArray()) && t2 == TYPE_NIL.getInstance()){
+				nilComp = true;
 				return TYPE_INT.getInstance();
 			}
 			System.out.format(">> ERROR cannot make binop between %s and %s\n",t1,t2);	
@@ -200,6 +202,9 @@ public class AST_EXP_BINOP extends AST_EXP
 				IR.getInstance().Add_IRcommand(new IRcommand_Binop_EQ_Strings(dst,t1,t2));
 			}
 			else{
+				if(nilComp){
+					IR.getInstance().Add_IRcommand(new IRcommand_LoadReg(t1, t1, 0));
+				}
 				IR.getInstance().Add_IRcommand(new IRcommand_Binop_EQ_Integers(dst,t1,t2));
 			}
 			

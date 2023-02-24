@@ -15,15 +15,15 @@ import MIPS.*;
 
 public class IRcommand_FieldAccess extends IRcommand
 {
-	String field;
+	int fieldOffset;
 	TEMP classObj;
 	TEMP result;
 	
-	public IRcommand_FieldAccess(TEMP result, TEMP classObj, String field)
+	public IRcommand_FieldAccess(TEMP result, TEMP classObj, int fieldOffset)
 	{
 		this.result = result;
 		this.classObj = classObj;
-		this.field = field;
+		this.fieldOffset = fieldOffset;
 	}
 	
 	/***************/
@@ -31,6 +31,10 @@ public class IRcommand_FieldAccess extends IRcommand
 	/***************/
 	public void MIPSme()
 	{
-		//missing
+		int residx = result.getSerialNumber()%10;
+		int objidx = classObj.getSerialNumber()%10;
+		MIPSGenerator.getInstance().beqz(String.format("$t%d", objidx), "invalid_pointer_label");
+
+		MIPSGenerator.getInstance().lw(String.format("$t%d", residx), String.format("$t%d", objidx), fieldOffset);
 	}
 }

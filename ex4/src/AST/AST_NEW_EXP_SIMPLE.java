@@ -15,7 +15,7 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 	public AST_TYPE type;
 	public PrintWriter fileWriter;
 	public int lineNumber;
-
+	public TYPE_CLASS classType;
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
@@ -82,7 +82,7 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 			fileWriter.close();
 			System.exit(0);
 		}
-
+		classType = (TYPE_CLASS)t;
 		/*********************************************************/
 		/* [4] Return value is t */
 		/*********************************************************/
@@ -92,7 +92,10 @@ public class AST_NEW_EXP_SIMPLE extends AST_NEW_EXP
 	{
 		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
 		String className = type.type;
-		IR.getInstance().Add_IRcommand(new IRcommand_NewClass(t,className));
+		int classSize = classType.classSize;
+		int realClassSize = classType.realClassSize;
+		TYPE_CLASS father = classType.father;
+		IR.getInstance().Add_IRcommand(new IRcommand_NewClass(t, className, classSize, realClassSize, father));
 		return t;
 	}
 }

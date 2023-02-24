@@ -17,7 +17,7 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 	public AST_EXP_LIST expList;
 	public PrintWriter fileWriter;
 	public int lineNumber;
-
+	public TYPE_CLASS varClass;
 	/*******************/
 	/*  CONSTRUCTOR(S) */
 	/*******************/
@@ -91,7 +91,7 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 				fileWriter.close();
 				System.exit(0);
 			}
-			TYPE_CLASS varClass = (TYPE_CLASS)varType;
+			varClass = (TYPE_CLASS)varType;
 			fieldType = varClass.findMethodInClass(fieldName);
 			if (fieldType==null){
 				System.out.format(">> ERROR field %s isn't a method of the class\n",fieldName);
@@ -171,18 +171,28 @@ public class AST_EXP_SUBSCRIPT extends AST_EXP
 	
 	public TEMP IRme()
 	{
-		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
 		TEMP_LIST argsTemps = null;
-		if (expList != null) argsTemps = expList.IRmeList();
-		if(fieldName == "PrintInt"){
-			IR.getInstance().Add_IRcommand(new IRcommand_PrintInt(argsTemps.head));
-			return t;
+		if(expList!=null) argsTemps= expList.IRmeList();
+		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
+		if(var == null){		
+			if(fieldName.equals("PrintInt")){
+				IR.getInstance().Add_IRcommand(new IRcommand_PrintInt(argsTemps.head));
+				return t;
+			}
+			if(fieldName.equals("PrintString")){
+				IR.getInstance().Add_IRcommand(new IRcommand_PrintString(argsTemps.head));
+				return t;
+			}
+			IR.getInstance().Add_IRcommand(new IRcommand_Call(t, fieldName, argsTemps));
 		}
-		if(fieldName == "PrintString"){
-			IR.getInstance().Add_IRcommand(new IRcommand_PrintString(argsTemps.head));
-			return t;
+		else{//method call
+			TEMP classObj = var.IRme();
+			IR.getInstance().Add_IRcommand(new IRcommand_Set_Virtual_Call(classObj, varClass));
+
+			String methodRealClass = varClass.getMethodRealClassName(fieldName);
+			IR.getInstance().Add_IRcommand(new IRcommand_Call(t, methodRealClass + "_class_" + fieldName, argsTemps));
+			IR.getInstance().Add_IRcommand(new IRcommand_End_Virtual_Call(classObj, varClass));
 		}
-		IR.getInstance().Add_IRcommand(new IRcommand_Call(t,fieldName, argsTemps));
 		return t;
 	}
 }

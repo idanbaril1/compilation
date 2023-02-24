@@ -11,6 +11,7 @@ public class AST_VAR_FIELD extends AST_VAR
 {
 	public AST_VAR var;
 	public String fieldName;
+	public TYPE_CLASS classType;
 	
 	/******************/
 	/* CONSTRUCTOR(S) */
@@ -96,14 +97,18 @@ public class AST_VAR_FIELD extends AST_VAR
 
 			System.exit(0);
 		}
-						
+		if(fieldType.isClass() && ((TYPE_CLASS)fieldType).data_members == null){
+			fieldType = SYMBOL_TABLE.getInstance().find(fieldType.name);
+		}
+		classType = varClass;				
 		return fieldType;		
 	}
 	public TEMP IRme()
 	{
 		TEMP t = TEMP_FACTORY.getInstance().getFreshTEMP();
 		TEMP varTemp = var.IRme();
-		//IR.getInstance().Add_IRcommand(new IRcommand_Load(t, varTemp, fieldName));
+		int fieldOffset = classType.getFieldOffset(fieldName);
+		IR.getInstance().Add_IRcommand(new IRcommand_FieldAccess(t, varTemp, fieldOffset));
 		return t;
 	}
 }

@@ -204,7 +204,11 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 				String constName = ((AST_EXP_STRING)exp).getStringConst();
 				IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name, constName));
 			}
-			
+			else{
+				TEMP zero = TEMP_FACTORY.getInstance().getFreshTEMP();
+				IR.getInstance().Add_IRcommand(new IRcommandConstInt(zero,0));
+				IR.getInstance().Add_IRcommand(new IRcommand_Store(name,zero));
+			}			
 		}
 		else if (newExp != null){
 			IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name, "721"));
@@ -212,6 +216,14 @@ public class AST_DEC_VAR extends AST_DEC_ABSTRACT
 		}
 		else{
 			IR.getInstance().Add_IRcommand(new IRcommand_Allocate(name, "721"));
+			if (exp!=null){
+				IR.getInstance().Add_IRcommand(new IRcommand_Store(name,exp.IRme()));
+			}
+			else{
+				TEMP zero = TEMP_FACTORY.getInstance().getFreshTEMP();
+				IR.getInstance().Add_IRcommand(new IRcommandConstInt(zero,0));
+				IR.getInstance().Add_IRcommand(new IRcommand_Store(name,zero));
+			}
 		}
 		
 		

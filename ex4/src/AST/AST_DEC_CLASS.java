@@ -2,6 +2,9 @@ package AST;
 
 import TYPES.*;
 import SYMBOL_TABLE.*;
+import TEMP.*;
+import IR.*;
+import MIPS.*;
 import java.io.PrintWriter;
 
 public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
@@ -14,6 +17,8 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 	public AST_CFIELD_LIST content;
 	public PrintWriter fileWriter;
 	public int lineNumber;
+	public TYPE_CLASS classType;
+	public TYPE_CLASS fatherClass;
 
 	/*******************/
 	/*  CONSTRUCTOR(S) */
@@ -70,7 +75,6 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 			fileWriter.close();
 			System.exit(0);
 		}
-		TYPE_CLASS fatherClass = null;
 		if(fatherName != null){
 			fatherClass = (TYPE_CLASS)SYMBOL_TABLE.getInstance().find(fatherName);
 			if(fatherClass == null){
@@ -91,7 +95,7 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/* [2] Semant Data Members */
 		/***************************/
 		TYPE_CLASS t = new TYPE_CLASS(fatherClass,name,(TYPE_LIST)content.SemantMe(fatherClass));
-
+		classType = t;
 		/*****************/
 		/* [3] End Scope */
 		/*****************/
@@ -113,5 +117,16 @@ public class AST_DEC_CLASS extends AST_DEC_ABSTRACT
 		/* [5] Return value is irrelevant for class declarations */
 		/*********************************************************/
 		return null;		
+	}
+	public TEMP IRme()
+	{				
+		String afterClass = "after_class_" + name;	
+		IR.getInstance().Add_IRcommand(new IRcommand_Jump_Label(afterClass));
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(String.format("class_%s", name)));
+
+		if (content != null) content.IRme(classType);
+		IR.getInstance().Add_IRcommand(new IRcommand_Jump_Reg("$ra"));
+		IR.getInstance().Add_IRcommand(new IRcommand_Label(afterClass));
+		return null;
 	}
 }
